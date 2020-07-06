@@ -43,3 +43,14 @@ if __name__ == '__main__':
     secret = Secrets()
     name = input("Enter username to download tweets: ")
     get_all_tweets(name, secret)
+
+
+# if a tweet is larger than 140 characters, it gets truncated. the following method can be used to get the whole tweet. 
+# we might check if the received tweet is truncated, and download the whole tweet if needed.
+# however this requires another API call and we have an API call limit, and passing that threshold might be problematic.
+
+"""status = api.get_status(id, tweet_mode="extended")
+try:
+    print(status.retweeted_status.full_text)
+except AttributeError:  # Not a Retweet
+    print(status.full_text)"""
