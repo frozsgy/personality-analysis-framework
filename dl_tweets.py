@@ -12,7 +12,7 @@ def get_all_tweets(screen_name, secret):
     alltweets = []  
     
     try:
-        new_tweets = api.user_timeline(screen_name = screen_name, count = 200)
+        new_tweets = api.user_timeline(screen_name = screen_name, count = 200, tweet_mode = "extended")
     except:
         print(f"Can't get tweets of user {screen_name}")
         exit()
@@ -24,7 +24,7 @@ def get_all_tweets(screen_name, secret):
     while len(new_tweets) > 0:
         print(f"getting tweets before {oldest}")
         
-        new_tweets = api.user_timeline(screen_name = screen_name, count = 200, max_id = oldest)
+        new_tweets = api.user_timeline(screen_name = screen_name, count = 200, max_id = oldest, tweet_mode = "extended")
        
         alltweets.extend(new_tweets)
         
@@ -32,25 +32,14 @@ def get_all_tweets(screen_name, secret):
         
         print(f"...{len(alltweets)} tweets downloaded so far")
     
-    outtweets = [[tweet.id_str, tweet.created_at, tweet.text] for tweet in alltweets]
+    outtweets = [[tweet.id_str, tweet.created_at, tweet.full_text] for tweet in alltweets]
      
     with open(f'{screen_name}_tweets.csv', 'w') as f:
         writer = csv.writer(f)
-        writer.writerow(["id","created_at","text"])
+        writer.writerow(["id","created_at","full_text"])
         writer.writerows(outtweets)
 
 if __name__ == '__main__':
     secret = Secrets()
     name = input("Enter username to download tweets: ")
     get_all_tweets(name, secret)
-
-
-# if a tweet is larger than 140 characters, it gets truncated. the following method can be used to get the whole tweet. 
-# we might check if the received tweet is truncated, and download the whole tweet if needed.
-# however this requires another API call and we have an API call limit, and passing that threshold might be problematic.
-
-"""status = api.get_status(id, tweet_mode="extended")
-try:
-    print(status.retweeted_status.full_text)
-except AttributeError:  # Not a Retweet
-    print(status.full_text)"""
