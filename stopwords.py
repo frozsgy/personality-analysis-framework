@@ -1,4 +1,5 @@
-# uses the stopword list from nltk module
+# uses the stopword list from the article
+# https://www.ranks.nl/stopwords/turkish
 
 class StopWord:
     __dictionary = []
@@ -10,5 +11,4 @@ class StopWord:
 
 
     def is_stop_word(self, word):
-
         return word in self.__dictionary
