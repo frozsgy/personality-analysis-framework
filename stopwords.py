@@ -4,7 +4,7 @@ class StopWord:
     __dictionary = []
 
     def __init__(self):
-        with open("turkish_stopwords_nltk", 'r', encoding = 'utf-8') as fdict:
+        with open("stopwords-tr.txt", 'r', encoding = 'utf-8') as fdict:
             for line in fdict:
                 self.__dictionary.append(line.strip())
 

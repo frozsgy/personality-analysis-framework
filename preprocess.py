@@ -7,7 +7,7 @@ from stopwords import *
 from debug import * # a debug function, unnecessary for the future
 
 text = "RT @ODTUKuzeyKibris: Aynı gökyüzü altında ama birbirinden uzak ODTÜ'lülere; https://t.co/Y9MWOCdvgY via @YouTube"
-#text = "Teknofest 2020'ye çeşitli yarışma kategorilerinde 74 takım ve 231 öğrenci ile katılıyoruz. @teknofest #ODTÜ #METU… https://t.co/xkU6UPr2gU"
+text = "Teknofest 2020'ye çeşitli yarışma kategorilerinde 74 takım ve 231 öğrenci ile katılıyoruz. @teknofest #ODTÜ #METU… https://t.co/xkU6UPr2gU"
 #text = "RT @BirGun_Gazetesi: AKP'li isimden, Sivas Katliamı'na 'Sivas Katliamı' diyenler hakkında suç duyurusu: \"\"Sivas'ın imajını zedeliyorlar\"\"\n htt…" 
 
 #text = input()
