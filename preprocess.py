@@ -2,13 +2,14 @@ import re
 import string
 
 from turkish import * # a previously written class by moa, to lower and uppercase turkish text
-from stopwords import * # a class derived from the stopwords repo at https://github.com/ahmetax/trstop
+from stopwords import * 
 
 from debug import * # a debug function, unnecessary for the future
 
-#text = "RT @BirGun_Gazetesi: AKP'li isimden, Sivas Katliamı'na 'Sivas Katliamı' diyenler hakkında suç duyurusu: \"\"Sivas'ın imajını zedeliyorlar\"\"\n htt…" 
 text = "RT @ODTUKuzeyKibris: Aynı gökyüzü altında ama birbirinden uzak ODTÜ'lülere; https://t.co/Y9MWOCdvgY via @YouTube"
-text = "Teknofest 2020'ye çeşitli yarışma kategorilerinde 74 takım ve 231 öğrenci ile katılıyoruz. @teknofest #ODTÜ #METU… https://t.co/xkU6UPr2gU"
+#text = "Teknofest 2020'ye çeşitli yarışma kategorilerinde 74 takım ve 231 öğrenci ile katılıyoruz. @teknofest #ODTÜ #METU… https://t.co/xkU6UPr2gU"
+#text = "RT @BirGun_Gazetesi: AKP'li isimden, Sivas Katliamı'na 'Sivas Katliamı' diyenler hakkında suç duyurusu: \"\"Sivas'ın imajını zedeliyorlar\"\"\n htt…" 
+
 #text = input()
 debug("input: \n" + text)
 
@@ -72,10 +73,16 @@ debug("removed URL's: \n" + text)
 
 # remove punctuation
 #text.translate(str.maketrans('', '', string.punctuation))
-text = text.replace("'", "") # odtü'lü gibi kelimeler için
+text = text.replace("'", "") # odtü'lü gibi kelimeler için -> bundan emin olamadım?
 text = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
 text = text.replace("…", "")
 debug("removed punctuation: \n" + text)
+
+
+
+# remove numbers ? or convert them to words
+# -- TODO --
+
 
 # remove stopwords
 # -- TODO -- 
