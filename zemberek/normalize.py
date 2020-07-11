@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname("__file__"), '..')))
 
 import grpc
 
-import language_id_pb2 as z_langid
-import language_id_pb2_grpc as z_langid_g
-import normalization_pb2 as z_normalization
-import normalization_pb2_grpc as z_normalization_g
-import preprocess_pb2 as z_preprocess
-import preprocess_pb2_grpc as z_preprocess_g
-import morphology_pb2 as z_morphology
-import morphology_pb2_grpc as z_morphology_g
+import zemberek.language_id_pb2 as z_langid
+import zemberek.language_id_pb2_grpc as z_langid_g
+import zemberek.normalization_pb2 as z_normalization
+import zemberek.normalization_pb2_grpc as z_normalization_g
+import zemberek.preprocess_pb2 as z_preprocess
+import zemberek.preprocess_pb2_grpc as z_preprocess_g
+import zemberek.morphology_pb2 as z_morphology
+import zemberek.morphology_pb2_grpc as z_morphology_g
 
 channel = grpc.insecure_channel('localhost:6789')
 
@@ -35,7 +38,8 @@ def analyze(i):
     response = morphology_stub.AnalyzeSentence(z_morphology.SentenceAnalysisRequest(input=i))
     return response;
 
-def run():
+
+def detect_test():
     lang_detect_input = 'merhaba dünya'
     lang_id = find_lang_id(lang_detect_input)
     print("Language of [" + lang_detect_input + "] is: " + lang_id)
@@ -64,8 +68,16 @@ def run():
         best = a.best
         lemmas = ""
         for l in best.lemmas:
-          lemmas = lemmas + " " + l
-        print("Word = " + a.token + ", Lemmas = " + lemmas + ", POS = [" + best.pos + "], Full Analysis = {" + best.analysis + "}")
+            lemmas = lemmas + " " + l
+            print("Word = " + a.token + ", Lemmas = " + lemmas + ", POS = [" + best.pos + "], Full Analysis = {" + best.analysis + "}")
+
+
+def run():
+    try :
+        detect_test()        
+    except grpc._channel._InactiveRpcError:
+        print("Cannot communicate with Zemberek, exiting.")
+        exit()
 
 
 if __name__ == '__main__':
