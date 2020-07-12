@@ -31,3 +31,9 @@ with preprocess.py
 5. Composition of Extracted Features and Word2Vec Vectors
 
 ## Clustering
+
+
+
+## Usage
+1. Run Zemberek as a service ```./run_zemberek.sh``` 
+2. Run the Python script either with ```python main.py username``` for giving username as an argument, or ```python main.py``` for entering username when asked

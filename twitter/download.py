@@ -6,6 +6,7 @@ import tweepy
 import csv
 
 from twitter.secrets import *
+from twitter.tweet import *
 
 def get_all_tweets(screen_name):
 
@@ -38,15 +39,22 @@ def get_all_tweets(screen_name):
         
         print(f"...{len(alltweets)} tweets downloaded so far")
     
-    outtweets = [[tweet.id_str, tweet.created_at, tweet.full_text] for tweet in alltweets]
+    #outtweets = [[tweet.id_str, tweet.created_at, tweet.full_text] for tweet in alltweets]
+
+    outtweets = []
+
+    for tweet in alltweets:
+        t = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, tweet.retweeted)
+        outtweets.append(t)
     return outtweets
     
 
 def create_csv(outtweets, screen_name):
     with open(f'{screen_name}_tweets.csv', 'w') as f:
         writer = csv.writer(f)
-        writer.writerow(["id","created_at","full_text"])
-        writer.writerows(outtweets)
+        writer.writerow(["id","created_at","full_text", "is_rt"])
+        for tweet in outtweets:
+            writer.writerow(tweet.get_csv())
 
 
 if __name__ == '__main__':
