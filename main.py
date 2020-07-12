@@ -2,7 +2,7 @@ import sys
 
 import twitter.download
 import utils.preprocess
-import zemberek.normalize
+import zemberek
 
 def run(username):
     # Data Collection
@@ -21,10 +21,10 @@ def run(username):
     normalized = []
     for tweet in preprocessed:
         try :
-            lang_id = zemberek.normalize.find_lang_id(tweet.get_tweet())
+            lang_id = zemberek.find_lang_id(tweet.get_tweet())
             if lang_id == "tr":
                 # continue, tweet is turkish
-                n_response = zemberek.normalize.normalize(tweet.get_tweet())
+                n_response = zemberek.normalize(tweet.get_tweet())
                 if n_response.normalized_input:
                     tweet.set_normalized_tweet(n_response.normalized_input)
                     normalized.append(tweet)
@@ -34,7 +34,7 @@ def run(username):
             else :
                 # do not handle, tweet is turkish
                 pass
-        except zemberek.normalize.grpc._channel._InactiveRpcError:
+        except zemberek.grpc._channel._InactiveRpcError:
             print("Cannot communicate with Zemberek, exiting.")
             exit()
 
@@ -43,7 +43,7 @@ def run(username):
 
     for tweet in normalized:
         try:
-            analysis_result = zemberek.normalize.analyze(tweet.get_tweet())
+            analysis_result = zemberek.analyze(tweet.get_tweet())
             tweet_lemmas = []
             for a in analysis_result.results:
                 best = a.best
@@ -54,7 +54,7 @@ def run(username):
                     #print("Word = " + a.token + ", Lemmas = " + lemmas + ", POS = [" + best.pos + "], Full Analysis = {" + best.analysis + "}")
             tweet.set_lemma(set(tweet_lemmas))
 
-        except zemberek.normalize.grpc._channel._InactiveRpcError:
+        except zemberek.grpc._channel._InactiveRpcError:
             print("Cannot communicate with Zemberek, exiting.")
             exit()
 
