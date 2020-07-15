@@ -41,11 +41,14 @@ def get_all_tweets(screen_name):
     
     #outtweets = [[tweet.id_str, tweet.created_at, tweet.full_text] for tweet in alltweets]
 
+    print(f"Total number of tweets downloaded: {len(alltweets)}")
     outtweets = []
 
     for tweet in alltweets:
-        t = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, tweet.retweeted)
-        outtweets.append(t)
+        if tweet.in_reply_to_status_id and tweet.retweeted == False:
+            t = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, tweet.retweeted)
+            outtweets.append(t)
+    print(f"Total number of tweets to process: {len(outtweets)}")
     return outtweets
     
 
