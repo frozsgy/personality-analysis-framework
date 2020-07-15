@@ -6,6 +6,7 @@ class Tweet:
     __rt = False
     __lemma = []
     __normalized_text = None
+    __img_url = None # TODO
 
     def __init__(self):
         pass
