@@ -39,6 +39,9 @@ class Tweet:
     def set_lemma(self, lemma):
         self.__lemma = lemma
 
+    def get_time(self):
+        return self.__time
+
 
 
 
