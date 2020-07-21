@@ -8,7 +8,7 @@ import csv
 from twitter.secrets import *
 from twitter.tweet import *
 
-def get_all_tweets(screen_name):
+def get_all_tweets(screen_name, debug = False):
 
     secret = Secrets()
     
@@ -30,7 +30,8 @@ def get_all_tweets(screen_name):
     
     while len(new_tweets) > 0:
         # break that allows to download 200 tweets only
-        #break
+        if debug:
+            break
         print(f"getting tweets before {oldest}")
         
         new_tweets = api.user_timeline(screen_name = screen_name, count = 200, max_id = oldest, tweet_mode = "extended")

@@ -37,3 +37,4 @@ with preprocess.py
 ## Usage
 1. Run Zemberek as a service ```./run_zemberek.sh``` 
 2. Run the Python script either with ```python main.py username``` for giving username as an argument, or ```python main.py``` for entering username when asked
+3. ```python main.py username --debug``` downloads only the recent 200 tweets to allow faster debugging.

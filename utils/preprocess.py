@@ -7,15 +7,21 @@ import string
 
 
 from utils.stopwords import * 
+from utils.emoji import *
 #from twitter.turkish import * 
 
 def preprocess(text):
+    # remove emojis and count smiling and negative ones
+    emoji_class = Emoji()
+    smiling = emoji_class.get_smiling_emoji_count(text)
+    negative = emoji_class.get_negative_emoji_count(text)
+    text = emoji_class.remove_emoji(text)
+
     # removing line breaks
     text = text.replace('\n', ' ').replace('\r', '')
     
     # removing the hashtag sign
     text = text.replace("#", "")
-    #debug("removed hashtags: \n" + text)
 
     # removing the RT keyword that gets added automatically when a RT'd tweet is fetched via the API
     # RT @username: original_tweet
@@ -24,7 +30,6 @@ def preprocess(text):
     if rt_search:
         rts = rt_search.groups()
         text = rts[0]
-    #debug("removed RT's: \n" + text)
 
     # removing mentions
     # username details: https://help.twitter.com/en/managing-your-account/twitter-username-rules
@@ -35,61 +40,24 @@ def preprocess(text):
     # removing mentions without the username length restriction
     regex = r"@[A-Za-z0-9_]{1,}"
     text = re.sub(regex, '', text)
-    #debug("removed mentions: \n" + text)
 
-
-    #tr_text = TurkishText(text)
-    #text = tr_text.lower() -- zemberek handles this
-
-    # TODO -- BUGGY
     # twitter uses t.co for url's so we can use a regex to match that only if the api gets stuff with t.co 
     # for example https://t.co/BLABLA
     # removing URL's 
     #regex = r"(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,8}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
     regex = r"(http(s)?:\/\/t.co\/)[a-zA-Z0-9]+"
     text = re.sub(regex, '', text)
-    #debug("removed URL's: \n" + text)
-
-
-    # remove punctuation
-    #text.translate(str.maketrans('', '', string.punctuation))
-    #text = text.replace("'", "") # odtü'lü gibi kelimeler için -> bundan emin olamadım?
-    #text = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
-    #text = text.replace("…", "")
-    #debug("removed punctuation: \n" + text)
-
-    # remove numbers ? or convert them to words
-    # -- TODO --
-
-    # remove stopwords
-    # -- TODO -- 
-    # https://github.com/ahmetax/trstop
-
-    # remove extra whitespace
-    # method 1: regex --> leaves extra whitespace at the beginning or the end, might need trim
-    #regex = r"\s+"
-    #text = re.sub(regex, ' ', text)
-
-    # method 2: 
-    #text = ' '.join(text.split())
-    #text = re.sub(" \d+", " ", text)
-
-    # method 3: method 2 merged with stopword removal:
+    
+    # removing stopwords and extra spaces
     s = StopWord()
     s_s = text.split()
     r = [i for i in s_s if s.is_stop_word(i) is False]
     text = ' '.join(r)
-    #debug("removed whitespace and stopwords: \n" + text)
-    return text
+    return (text, smiling, negative)
 
 
 if __name__ == '__main__':
-
-    text = "RT @ODTUKuzeyKibris: Aynı gökyüzü altında ama birbirinden uzak ODTÜ'lülere; https://t.co/Y9MWOCdvgY via @YouTube"
-    #text = "Teknofest 2020'ye çeşitli yarışma kategorilerinde 74 takım ve 231 öğrenci ile katılıyoruz. @teknofest #ODTÜ #METU… https://t.co/xkU6UPr2gU"
-    #text = "RT @BirGun_Gazetesi: AKP'li isimden, Sivas Katliamı'na 'Sivas Katliamı' diyenler hakkında suç duyurusu: \"\"Sivas'ın imajını zedeliyorlar\"\"\n htt…" 
-
-    #text = input()
+    text = input()
     print("input: \n" + text + "\n" + "-" * 80)
     tt = preprocess(text)
     print("output: \n" + tt + "\n" + "-" * 80)

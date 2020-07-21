@@ -6,11 +6,11 @@ import utils.preprocess
 import zemberek
 from vector import vector
 
-def run(username):
+def run(username, debug = False):
     # Data Collection
     # download.py
 
-    all_tweets = twitter.download.get_all_tweets(username)
+    all_tweets = twitter.download.get_all_tweets(username, debug)
 
     # Data Preprocess
 
@@ -53,15 +53,14 @@ def run(username):
             tweet_full_stop = 0
             tweet_unknown = 0
             plural_regex = r"A[1-3]pl"
-            print(tweet.get_normalized_tweet())
-            print(len(tweet.get_normalized_tweet().split()))
+            # print(tweet.get_normalized_tweet())
+            # print(len(tweet.get_normalized_tweet().split()))
             for a in analysis_result.results:
                 best = a.best
                 lemmas = ""
                 for l in best.lemmas:
                     if l != "UNK":
                         tweet_lemmas.append(l)
-                        #lemmas += " " + l
                         tweet_pos.append(best.pos)
                     else :
                         tweet_unknown += 1
@@ -71,9 +70,6 @@ def run(username):
                     tweet_full_stop += 1
                 tweet_words += 1
 
-                    #print("pos: " + best.pos)
-                    #print("Word = " + a.token + ", Lemmas = " + lemmas + ", POS = [" + best.pos + "], Full Analysis = {" + best.analysis + "}")
-            # Noun, Postp, Num, Dup, Det, Adv, Zero, Verb, Interj, Ques, Punc, Pron, Conj, Adj, 
             for i in tweet_pos:
                 tweet.add_pos(i)
             tweet.set_pos("Plur", tweet_plural)
@@ -91,9 +87,7 @@ def run(username):
 
     for tweet in normalized:
         v = vector.Vector()
-        v.set_time(tweet)
-        v.set_zemberek(tweet)
-        # missing emojis in the vector
+        v.set_vector(tweet)
         tweet.set_vector(v)
 
 
@@ -123,9 +117,12 @@ def run(username):
 
 
 if __name__ == '__main__':
+    debugging = False
     args = sys.argv
     if len(args) > 1 :
         username = args[1]
+        if "--debug" in args:
+            debugging = True
     else :
         username = input("Enter username: ")
-    run(username)
+    run(username, debugging)

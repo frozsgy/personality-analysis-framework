@@ -35,10 +35,7 @@ class Vector:
     def __init__(self):
         pass
 
-    def get_vector(self):
-        return [self.__morning, self.__afternoon, self.__evening, self.__night, self.__word, self.__verb, self.__noun, self.__punctuation, self.__adjective, self.__adverb, self.__negative, self.__numeral, self.__determiner, self.__conjunction, self.__pronoun, self.__incorrect, self.__plural, self.__full_stop, self.__smiling_emoji, self.__negative_emoji]
-
-    def set_time(self, tweet):
+    def __set_time(self, tweet):
         tweet_time = tweet.get_time()
         hour = tweet_time.hour // 6
 
@@ -59,7 +56,7 @@ class Vector:
             self.__afternoon += 1
             self.__evening += 1
 
-    def set_zemberek(self, tweet):
+    def __set_zemberek(self, tweet):
         pos_vector = tweet.get_pos()
         self.__noun = pos_vector.get("Noun", 0)
         self.__word = pos_vector.get("Word", 0)
@@ -76,3 +73,14 @@ class Vector:
         self.__full_stop = pos_vector.get("Fstop", 0)
         self.__incorrect = pos_vector.get("Inc", 0)
     
+    def __set_emojis(self, tweet):
+        self.__smiling_emoji = tweet.get_smiling_emoji()
+        self.__negative_emoji = tweet.get_negative_emoji()
+
+    def set_vector(self, tweet):
+        self.__set_time(tweet)
+        self.__set_zemberek(tweet)
+        self.__set_emojis(tweet)
+
+    def get_vector(self):
+        return [self.__morning, self.__afternoon, self.__evening, self.__night, self.__word, self.__verb, self.__noun, self.__punctuation, self.__adjective, self.__adverb, self.__negative, self.__numeral, self.__determiner, self.__conjunction, self.__pronoun, self.__incorrect, self.__plural, self.__full_stop, self.__smiling_emoji, self.__negative_emoji]

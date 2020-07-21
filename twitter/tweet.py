@@ -9,6 +9,8 @@ class Tweet:
     __normalized_text = None
     __img_url = None # TODO
     __vector = None
+    __smiling_emoji = 0
+    __negative_emoji = 0
 
     def __init__(self):
         self.__pos = dict()
@@ -25,7 +27,7 @@ class Tweet:
         return map(str, (self.__id, self.__time, self.__full_text, self.__rt))
 
     def map_tweet(self, function):
-        self.__full_text = function(self.__full_text)
+        self.__full_text, self.__smiling_emoji, self.__negative_emoji = function(self.__full_text)
         return self
 
     def set_normalized_tweet(self, tweet):
@@ -63,6 +65,18 @@ class Tweet:
 
     def get_vector(self):
         return self.__vector
+
+    def set_smiling_emoji(self, val):
+        self.__smiling_emoji = val
+
+    def get_smiling_emoji(self):
+        return self.__smiling_emoji
+
+    def set_negative_emoji(self, val):
+        self.__negative_emoji = val
+
+    def get_negative_emoji(self):
+        return self.__negative_emoji
 
 
 
