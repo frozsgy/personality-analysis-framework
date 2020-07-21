@@ -10,12 +10,13 @@ from utils.stopwords import *
 from utils.emoji import *
 #from twitter.turkish import * 
 
+emoji_util = Emoji()
+
 def preprocess(text):
     # remove emojis and count smiling and negative ones
-    emoji_class = Emoji()
-    smiling = emoji_class.get_smiling_emoji_count(text)
-    negative = emoji_class.get_negative_emoji_count(text)
-    text = emoji_class.remove_emoji(text)
+    smiling = emoji_util.get_smiling_emoji_count(text)
+    negative = emoji_util.get_negative_emoji_count(text)
+    text = emoji_util.remove_emoji(text)
 
     # removing line breaks
     text = text.replace('\n', ' ').replace('\r', '')

@@ -6,8 +6,8 @@ class Emoji:
     __neg = (':angry_face:',':angry_face_with_horns:',':face_with_steam_from_nose:',':face_with_symbols_on_mouth:',':pouting_face:',':skull:',':skull_and_crossbones:',':smiling_face_with_horns:')
 
     def __init__(self):
-        self.__sml_emo = map(emoji.emojize, self.__sml)
-        self.__neg_emo = map(emoji.emojize, self.__neg)
+        self.__sml_emo = list(map(emoji.emojize, self.__sml))
+        self.__neg_emo = list(map(emoji.emojize, self.__neg))
 
     def get_smiling_emoji_count(self, text):
         count = 0
