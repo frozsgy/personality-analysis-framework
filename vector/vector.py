@@ -40,8 +40,7 @@ class Vector:
 
     def set_time(self, tweet):
         tweet_time = tweet.get_time()
-        date_obj = datetime.strptime(tweet_time, "%Y-%m-%d %H:%M:%S")
-        hour = date_obj.hour // 6
+        hour = tweet_time.hour // 6
 
         if hour == 0:
             # night
@@ -59,3 +58,21 @@ class Vector:
             # evening
             self.__afternoon += 1
             self.__evening += 1
+
+    def set_zemberek(self, tweet):
+        pos_vector = tweet.get_pos()
+        self.__noun = pos_vector.get("Noun", 0)
+        self.__word = pos_vector.get("Word", 0)
+        self.__verb = pos_vector.get("Verb", 0)
+        self.__adjective = pos_vector.get("Adj", 0)
+        self.__adverb = pos_vector.get("Adv", 0)
+        self.__conjunction = pos_vector.get("Conj", 0)
+        self.__punctuation = pos_vector.get("Punc", 0)
+        self.__numeral = pos_vector.get("Num", 0)
+        self.__determiner = pos_vector.get("Det", 0)
+        self.__pronoun = pos_vector.get("Pron", 0)
+        self.__plural = pos_vector.get("Plur", 0)
+        self.__negative = pos_vector.get("Neg", 0)
+        self.__full_stop = pos_vector.get("Fstop", 0)
+        self.__incorrect = pos_vector.get("Inc", 0)
+    

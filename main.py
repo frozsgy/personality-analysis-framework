@@ -1,8 +1,10 @@
 import sys
+import re
 
 import twitter.download
 import utils.preprocess
 import zemberek
+from vector import vector
 
 def run(username):
     # Data Collection
@@ -35,7 +37,7 @@ def run(username):
                 # do not handle, tweet is turkish
                 pass
         except zemberek.grpc._channel._InactiveRpcError:
-            print("Cannot communicate with Zemberek, exiting.")
+            print("Cannot communicate with Zemberek, exiting while normalizing.")
             exit()
 
     ## Lemmatization
@@ -43,28 +45,69 @@ def run(username):
 
     for tweet in normalized:
         try:
-            analysis_result = zemberek.analyze(tweet.get_tweet())
+            analysis_result = zemberek.analyze(tweet.get_normalized_tweet())
             tweet_lemmas = []
+            tweet_pos = []
+            tweet_plural = 0
+            tweet_words = 0
+            tweet_full_stop = 0
+            tweet_unknown = 0
+            plural_regex = r"A[1-3]pl"
+            print(tweet.get_normalized_tweet())
+            print(len(tweet.get_normalized_tweet().split()))
             for a in analysis_result.results:
                 best = a.best
                 lemmas = ""
                 for l in best.lemmas:
-                    tweet_lemmas.append(l)
-                    lemmas = lemmas + " " + l
+                    if l != "UNK":
+                        tweet_lemmas.append(l)
+                        #lemmas += " " + l
+                        tweet_pos.append(best.pos)
+                    else :
+                        tweet_unknown += 1
+                    if re.search(plural_regex, best.analysis, flags=re.S) is not None:
+                        tweet_plural += 1
+                if a.token == ".":
+                    tweet_full_stop += 1
+                tweet_words += 1
+
+                    #print("pos: " + best.pos)
                     #print("Word = " + a.token + ", Lemmas = " + lemmas + ", POS = [" + best.pos + "], Full Analysis = {" + best.analysis + "}")
+            # Noun, Postp, Num, Dup, Det, Adv, Zero, Verb, Interj, Ques, Punc, Pron, Conj, Adj, 
+            for i in tweet_pos:
+                tweet.add_pos(i)
+            tweet.set_pos("Plur", tweet_plural)
+            tweet.set_pos("Word", tweet_words)
+            tweet.set_pos("Fstop", tweet_full_stop)
+            tweet.set_pos("Inc", tweet_unknown)
             tweet.set_lemma(set(tweet_lemmas))
 
         except zemberek.grpc._channel._InactiveRpcError:
-            print("Cannot communicate with Zemberek, exiting.")
+            print("Cannot communicate with Zemberek, exiting while analyzing.")
             exit()
+
+
+    # Vector Construction
+
+    for tweet in normalized:
+        v = vector.Vector()
+        v.set_time(tweet)
+        v.set_zemberek(tweet)
+        # missing emojis in the vector
+        tweet.set_vector(v)
+
 
     for tweet in normalized:
         pass
         print("-" * 80)
         print(list(tweet.get_csv()))
+        print(tweet.get_normalized_tweet())
         print(list(tweet.get_lemma()))
+        print(tweet.get_pos())
+        print(tweet.get_vector().get_vector())
 
-    # Vector Construction
+
+
 
     ## Feature Extraction
 

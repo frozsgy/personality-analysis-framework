@@ -29,6 +29,8 @@ def get_all_tweets(screen_name):
     oldest = alltweets[-1].id - 1
     
     while len(new_tweets) > 0:
+        # break that allows to download 200 tweets only
+        #break
         print(f"getting tweets before {oldest}")
         
         new_tweets = api.user_timeline(screen_name = screen_name, count = 200, max_id = oldest, tweet_mode = "extended")
@@ -39,7 +41,6 @@ def get_all_tweets(screen_name):
         
         print(f"...{len(alltweets)} tweets downloaded so far")
     
-    #outtweets = [[tweet.id_str, tweet.created_at, tweet.full_text] for tweet in alltweets]
 
     print(f"Total number of tweets downloaded: {len(alltweets)}")
     outtweets = []

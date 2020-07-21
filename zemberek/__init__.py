@@ -36,4 +36,4 @@ def normalize(i):
 
 def analyze(i):
     response = morphology_stub.AnalyzeSentence(z_morphology.SentenceAnalysisRequest(input=i))
-    return response;
+    return response
