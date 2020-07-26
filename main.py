@@ -1,6 +1,9 @@
 import sys
 import re
 
+import numpy as np
+from sklearn.preprocessing import KBinsDiscretizer
+
 import twitter.download
 import utils.preprocess
 import zemberek
@@ -91,6 +94,15 @@ def run(username, debug = False):
         tweet.set_vector(v)
 
 
+
+    ## Feature Extraction
+
+    ## Feature Reduction
+
+    ## Normalization
+
+    sum_vector = np.array([0] * 20)
+
     for tweet in normalized:
         pass
         print("-" * 80)
@@ -99,15 +111,19 @@ def run(username, debug = False):
         print(list(tweet.get_lemma()))
         print(tweet.get_pos())
         print(tweet.get_vector().get_vector())
+        v = np.array(tweet.get_vector().get_vector())
+        sum_vector = np.add(sum_vector, v)
+    
+    sum_transformed = sum_vector.reshape(-1, 1)
+    
+    normalized = KBinsDiscretizer(n_bins=[4], encode='ordinal').fit(sum_transformed).transform(sum_transformed)
+
+    normalized = normalized/4.
+
+    print(normalized.reshape(1, 20))
 
 
 
-
-    ## Feature Extraction
-
-    ## Feature Reduction
-
-    ## Normalization
 
     ## TF-IDF Weighting and Word2Vec based Word Embedding
 
