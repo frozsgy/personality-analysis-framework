@@ -45,7 +45,7 @@ output.close()
 
 logging.info("Vector training has started.")
 
-model = Word2Vec(LineSentence(wiki_out), size = 38, window = 5, min_count = 5, workers = multiprocessing.cpu_count())
+model = Word2Vec(LineSentence(wiki_out), size = 38, window = 7, min_count = 3, workers = multiprocessing.cpu_count())
 logging.info("Vector training has completed.")
 
 
