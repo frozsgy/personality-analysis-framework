@@ -4,6 +4,14 @@ import re
 import numpy as np
 from sklearn.preprocessing import KBinsDiscretizer
 
+
+import json
+import requests
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer
+
 import twitter.download
 import utils.preprocess
 import zemberek
@@ -103,24 +111,76 @@ def run(username, debug = False):
 
     sum_vector = np.array([0] * 20)
 
+    sum_lemmas = []
+
     for tweet in normalized:
         pass
         print("-" * 80)
         print(list(tweet.get_csv()))
         print(tweet.get_normalized_tweet())
-        print(list(tweet.get_lemma()))
+        lemma_list = list(tweet.get_lemma())
+        sum_lemmas += lemma_list
+        print(lemma_list)
         print(tweet.get_pos())
         print(tweet.get_vector().get_vector())
         v = np.array(tweet.get_vector().get_vector())
         sum_vector = np.add(sum_vector, v)
     
     sum_transformed = sum_vector.reshape(-1, 1)
+
+    print(sum_transformed.reshape(1, 20))
     
     normalized = KBinsDiscretizer(n_bins=[4], encode='ordinal').fit(sum_transformed).transform(sum_transformed)
 
     normalized = normalized/4.
 
     print(normalized.reshape(1, 20))
+
+    print(sum_lemmas)
+
+
+    cv = CountVectorizer(max_features = 20, ngram_range = (1, 1), max_df = 0.8)
+    top_words = []
+
+    try:
+        word_count_vector = cv.fit_transform(sum_lemmas)
+        tfidf_transformer = TfidfTransformer(smooth_idf = True, use_idf = True)
+        tfidf_transformer.fit(word_count_vector)
+
+        count_vector = cv.transform(sum_lemmas)
+        tf_idf_vector = tfidf_transformer.transform(count_vector)
+
+        top_words = cv.get_feature_names()
+
+    except Exception as e:
+        print("error accured")
+
+
+
+    base_url = "http://127.0.0.1:5000/word2vec?word="
+
+    vector_ = np.array([0] * 38)
+
+    for word in top_words:
+        link = base_url + word
+        req = requests.get(link)
+        try:
+            v = req.json()['word2vec'][0]
+            if v == '':
+                v = [0] * 38
+            v_np = np.array(v)
+            vector_ = np.add(vector_, v_np)
+        except:
+            pass
+    vv = vector_.tolist()
+    print(vv)
+    print(normalized.reshape(1, 20).tolist())
+
+    all_vector = vv + normalized.reshape(1, 20).tolist()[0]
+
+    print(all_vector)
+
+
 
 
 
