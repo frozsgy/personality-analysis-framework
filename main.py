@@ -138,6 +138,8 @@ def run(username, debug = False):
 
     print(sum_lemmas)
 
+    ## TF-IDF Weighting and Word2Vec based Word Embedding
+
 
     cv = CountVectorizer(max_features = 20, ngram_range = (1, 1), max_df = 0.8)
     top_words = []
@@ -176,6 +178,8 @@ def run(username, debug = False):
     print(vv)
     print(normalized.reshape(1, 20).tolist())
 
+    ## Composition of Extracted Features and Word2Vec Vectors
+
     all_vector = vv + normalized.reshape(1, 20).tolist()[0]
 
     print(all_vector)
@@ -185,9 +189,6 @@ def run(username, debug = False):
 
 
 
-    ## TF-IDF Weighting and Word2Vec based Word Embedding
-
-    ## Composition of Extracted Features and Word2Vec Vectors
 
     # Clustering
 
