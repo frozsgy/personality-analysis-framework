@@ -1,3 +1,4 @@
 #!/bin/bash
-python vector/download.py
-python vector/train.py
+cd vector
+python download.py
+python train.py
