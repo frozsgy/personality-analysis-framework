@@ -35,6 +35,8 @@ with preprocess.py
 
 
 ## Usage
+0. Train the Word2Vec library using ```./train_model.sh```. This step should be done only for the initial run.
 1. Run Zemberek as a service ```./run_zemberek.sh``` 
-2. Run the Python script either with ```python main.py username``` for giving username as an argument, or ```python main.py``` for entering username when asked
-3. ```python main.py username --debug``` downloads only the recent 200 tweets to allow faster debugging.
+2. Run Word2Vec service via ```./run_word2vec.sh```
+3. Run the Python script either with ```python main.py username``` for giving username as an argument, or ```python main.py``` for entering username when asked
+4. ```python main.py username --debug``` downloads only the recent 200 tweets to allow faster debugging.

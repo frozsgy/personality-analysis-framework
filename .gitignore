@@ -130,3 +130,6 @@ dmypy.json
 
 # secrets
 secrets.py
+
+# word2vec binaries
+*.bin
