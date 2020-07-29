@@ -17,11 +17,14 @@ import utils.preprocess
 import zemberek
 from vector import vector
 
-def run(username, debug = False):
+def run(username, from_file = False, debug = False):
     # Data Collection
     # download.py
 
-    all_tweets = twitter.download.get_all_tweets(username, debug)
+    if from_file is True:
+        all_tweets = twitter.download.read_csv(username)
+    else :
+        all_tweets = twitter.download.get_all_tweets(username, debug)
 
     # Data Preprocess
 
@@ -114,29 +117,29 @@ def run(username, debug = False):
     sum_lemmas = []
 
     for tweet in normalized:
-        pass
-        print("-" * 80)
-        print(list(tweet.get_csv()))
-        print(tweet.get_normalized_tweet())
         lemma_list = list(tweet.get_lemma())
         sum_lemmas += lemma_list
-        print(lemma_list)
-        print(tweet.get_pos())
-        print(tweet.get_vector().get_vector())
         v = np.array(tweet.get_vector().get_vector())
         sum_vector = np.add(sum_vector, v)
+        """print("-" * 80)
+        print(list(tweet.get_csv()))
+        print(tweet.get_normalized_tweet())
+        print(lemma_list)
+        print(tweet.get_pos())
+        print(tweet.get_vector().get_vector())"""
+        
     
     sum_transformed = sum_vector.reshape(-1, 1)
 
-    print(sum_transformed.reshape(1, 20))
+    """print(sum_transformed.reshape(1, 20))"""
     
     normalized = KBinsDiscretizer(n_bins=[4], encode='ordinal').fit(sum_transformed).transform(sum_transformed)
 
     normalized = normalized/4.
 
-    print(normalized.reshape(1, 20))
+    """print(normalized.reshape(1, 20))
 
-    print(sum_lemmas)
+    print(sum_lemmas)"""
 
     ## TF-IDF Weighting and Word2Vec based Word Embedding
 
@@ -174,9 +177,9 @@ def run(username, debug = False):
             vector_ = np.add(vector_, v_np)
         except:
             pass
-    vv = vector_.tolist()
-    print(vv)
-    print(normalized.reshape(1, 20).tolist())
+    vv = (vector_/20.).tolist()
+    """print(vv)
+    print(normalized.reshape(1, 20).tolist())"""
 
     ## Composition of Extracted Features and Word2Vec Vectors
 
@@ -195,11 +198,14 @@ def run(username, debug = False):
 
 if __name__ == '__main__':
     debugging = False
+    from_file = False
     args = sys.argv
     if len(args) > 1 :
         username = args[1]
         if "--debug" in args:
             debugging = True
+        if "--file" in args:
+            from_file = True
     else :
         username = input("Enter username: ")
-    run(username, debugging)
+    run(username, from_file, debugging)

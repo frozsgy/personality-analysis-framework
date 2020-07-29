@@ -1,6 +1,7 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname("__file__"), '..')))
+from datetime import datetime
 
 import tweepy
 import csv
@@ -55,14 +56,19 @@ def get_all_tweets(screen_name, debug = False):
     
 
 def create_csv(outtweets, screen_name):
-    with open(f'{screen_name}_tweets.csv', 'w') as f:
+    with open(f'data/tweets/{screen_name}_tweets.csv', 'w') as f:
         writer = csv.writer(f)
         writer.writerow(["id","created_at","full_text", "is_rt"])
         for tweet in outtweets:
             writer.writerow(tweet.get_csv())
 
-
-if __name__ == '__main__':
-    name = input("Enter username to download tweets: ")
-    outtweets = get_all_tweets(name)
-    create_csv(outtweets, name)
+def read_csv(screen_name):
+    outtweets = []
+    with open(f'data/tweets/{screen_name}_tweets.csv', 'r') as f:
+        reader = csv.reader(f, delimiter=",")
+        next(reader)
+        for line in reader:
+            line[1] = datetime.strptime(line[1], '%Y-%m-%d %H:%M:%S')
+            t = Tweet(*line)
+            outtweets.append(t)
+    return outtweets
