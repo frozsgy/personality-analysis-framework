@@ -1,2 +1,2 @@
 #!/bin/bash
-python vector/word2vec-service.py
+python vector/word2vec.py
