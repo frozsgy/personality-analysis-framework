@@ -133,3 +133,6 @@ secrets.py
 
 # word2vec binaries
 *.bin
+
+# tweets
+data/tweets/*.csv
