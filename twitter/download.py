@@ -9,7 +9,7 @@ import csv
 from twitter.secrets import *
 from twitter.tweet import *
 
-def get_all_tweets(screen_name, debug = False):
+def get_all_tweets(screen_name, debug = False, save_raw_data = False):
 
     secret = Secrets()
     
@@ -45,18 +45,41 @@ def get_all_tweets(screen_name, debug = False):
     
 
     print(f"Total number of tweets downloaded: {len(alltweets)}")
+
+    intweets = []
     outtweets = []
 
     for tweet in alltweets:
-        if tweet.in_reply_to_status_id and tweet.retweeted == False:
-            t = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, tweet.retweeted)
+
+        is_rt = False
+        try: 
+            tweet.retweeted_status
+            is_rt = True
+        except:
+            pass
+
+        t_o = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, is_rt)
+        intweets.append(t_o)
+
+        if tweet.in_reply_to_status_id is None and is_rt is False:
+            t = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, is_rt)
             outtweets.append(t)
+            
     print(f"Total number of tweets to process: {len(outtweets)}")
+
+    if save_raw_data is True:
+        return (intweets, outtweets)
     return outtweets
     
 
-def create_csv(outtweets, screen_name):
-    with open(f'data/tweets/{screen_name}_tweets.csv', 'w') as f:
+def create_csv(outtweets, screen_name, save_raw_data = False):
+
+    file_name = f'data/tweets/{screen_name}_tweets.csv'
+
+    if save_raw_data is True:
+        file_name = f'data/tweets/raw/{screen_name}_tweets.csv'
+            
+    with open(file_name, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(["id","created_at","full_text", "is_rt"])
         for tweet in outtweets:
