@@ -137,3 +137,6 @@ secrets.py
 # tweets
 data/tweets/*.csv
 data/tweets/raw/*.csv
+
+# questionnaire data
+data/bigfive/*

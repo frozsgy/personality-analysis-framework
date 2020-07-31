@@ -61,7 +61,8 @@ def get_all_tweets(screen_name, debug = False, save_raw_data = False):
         t_o = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, is_rt)
         intweets.append(t_o)
 
-        if tweet.in_reply_to_status_id is None and is_rt is False:
+        #if tweet.in_reply_to_status_id is None and is_rt is False:
+        if is_rt is False:
             t = Tweet(tweet.id_str, tweet.created_at, tweet.full_text, is_rt)
             outtweets.append(t)
             
