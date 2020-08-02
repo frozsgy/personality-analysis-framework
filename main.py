@@ -1,13 +1,11 @@
 import sys
 import re
 
-import numpy as np
-from sklearn.preprocessing import KBinsDiscretizer
-
-
 import json
 import requests
 
+import numpy as np
+from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
@@ -17,23 +15,23 @@ import utils.preprocess
 import zemberek
 from vector import vector
 
-def run(username, from_file = False, debug = False):
+def calculate_vector(username, from_file = False, debug = False, verbose = False):
+    
     # Data Collection
-    # download.py
 
     if from_file is True:
         all_tweets = twitter.download.read_csv(username)
     else :
-        all_tweets = twitter.download.get_all_tweets(username, debug)
+        all_tweets = twitter.download.get_all_tweets(username, debug, False, verbose)
 
     # Data Preprocess
 
     ## Preprocess
-    ## preprocess.py
+
     preprocessed = [tweet.map_tweet(utils.preprocess.preprocess) for tweet in all_tweets]
 
     ## Normalization
-    ## normalize.py
+
     normalized = []
     for tweet in preprocessed:
         try :
@@ -55,7 +53,6 @@ def run(username, from_file = False, debug = False):
             exit()
 
     ## Lemmatization
-    ## normalize.py
 
     for tweet in normalized:
         try:
@@ -67,8 +64,6 @@ def run(username, from_file = False, debug = False):
             tweet_full_stop = 0
             tweet_unknown = 0
             plural_regex = r"A[1-3]pl"
-            # print(tweet.get_normalized_tweet())
-            # print(len(tweet.get_normalized_tweet().split()))
             for a in analysis_result.results:
                 best = a.best
                 lemmas = ""
@@ -78,7 +73,7 @@ def run(username, from_file = False, debug = False):
                         tweet_pos.append(best.pos)
                     else :
                         tweet_unknown += 1
-                    if re.search(plural_regex, best.analysis, flags=re.S) is not None:
+                    if re.search(plural_regex, best.analysis, flags = re.S) is not None:
                         tweet_plural += 1
                 if a.token == ".":
                     tweet_full_stop += 1
@@ -96,7 +91,6 @@ def run(username, from_file = False, debug = False):
             print("Cannot communicate with Zemberek, exiting while analyzing.")
             exit()
 
-
     # Vector Construction
 
     for tweet in normalized:
@@ -104,12 +98,8 @@ def run(username, from_file = False, debug = False):
         v.set_vector(tweet)
         tweet.set_vector(v)
 
-
-
     ## Feature Extraction
-
     ## Feature Reduction
-
     ## Normalization
 
     sum_vector = np.array([0] * 20)
@@ -120,29 +110,17 @@ def run(username, from_file = False, debug = False):
         lemma_list = list(tweet.get_lemma())
         sum_lemmas += lemma_list
         v = np.array(tweet.get_vector().get_vector())
-        sum_vector = np.add(sum_vector, v)
-        """print("-" * 80)
-        print(list(tweet.get_csv()))
-        print(tweet.get_normalized_tweet())
-        print(lemma_list)
-        print(tweet.get_pos())
-        print(tweet.get_vector().get_vector())"""
-        
+        sum_vector = np.add(sum_vector, v)        
     
     sum_transformed = sum_vector.reshape(-1, 1)
-
-    """print(sum_transformed.reshape(1, 20))"""
-    
-    normalized = KBinsDiscretizer(n_bins=[4], encode='ordinal').fit(sum_transformed).transform(sum_transformed)
-
+    normalized = KBinsDiscretizer(n_bins = [4], encode = 'ordinal').fit(sum_transformed).transform(sum_transformed)
     normalized = normalized/4.
 
-    """print(normalized.reshape(1, 20))
-
-    print(sum_lemmas)"""
+    if verbose is True:
+        print(normalized.reshape(1, 20))
+        print(sum_lemmas)
 
     ## TF-IDF Weighting and Word2Vec based Word Embedding
-
 
     cv = CountVectorizer(max_features = 20, ngram_range = (1, 1), max_df = 0.8)
     top_words = []
@@ -160,11 +138,12 @@ def run(username, from_file = False, debug = False):
     except Exception as e:
         print("error accured")
 
-
+    if verbose is True:
+        print(top_words)
 
     base_url = "http://127.0.0.1:5000/word2vec?word="
 
-    vector_ = np.array([0] * 38)
+    vector_np = np.array([0] * 38)
 
     for word in top_words:
         link = base_url + word
@@ -174,31 +153,30 @@ def run(username, from_file = False, debug = False):
             if v == '':
                 v = [0] * 38
             v_np = np.array(v)
-            vector_ = np.add(vector_, v_np)
+            vector_np = np.add(vector_np, v_np)
         except:
             pass
-    vv = (vector_/20.).tolist()
-    """print(vv)
-    print(normalized.reshape(1, 20).tolist())"""
+    vv = (vector_np/20.).tolist()
 
     ## Composition of Extracted Features and Word2Vec Vectors
 
     all_vector = vv + normalized.reshape(1, 20).tolist()[0]
 
-    print(all_vector)
+    if verbose is True:
+        print(all_vector)
+
+    return all_vector
 
 
-
-
-
-
-
+def cluster(username, vector, debug = False):
     # Clustering
-
+    pass
+    
 
 if __name__ == '__main__':
     debugging = False
     from_file = False
+    verbose = False
     args = sys.argv
     if len(args) > 1 :
         username = args[1]
@@ -206,6 +184,9 @@ if __name__ == '__main__':
             debugging = True
         if "--file" in args:
             from_file = True
+        if "--verbose" in args:
+            verbose = True
     else :
         username = input("Enter username: ")
-    run(username, from_file, debugging)
+    vector = calculate_vector(username, from_file, debugging, verbose)
+    print(vector)
