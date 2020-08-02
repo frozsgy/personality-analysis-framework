@@ -9,7 +9,7 @@ import csv
 from twitter.secrets import *
 from twitter.tweet import *
 
-def get_all_tweets(screen_name, debug = False, save_raw_data = False):
+def get_all_tweets(screen_name, debug = False, save_raw_data = False, verbose = False):
 
     secret = Secrets()
     
@@ -26,6 +26,11 @@ def get_all_tweets(screen_name, debug = False, save_raw_data = False):
         exit()
     
     alltweets.extend(new_tweets)
+
+    if len(alltweets) == 0:
+        if save_raw_data is True:
+            return (False, False)
+        return False
     
     oldest = alltweets[-1].id - 1
     
@@ -33,15 +38,18 @@ def get_all_tweets(screen_name, debug = False, save_raw_data = False):
         # break that allows to download 200 tweets only
         if debug:
             break
-        print(f"getting tweets before {oldest}")
+
+        if verbose is True:
+            print(f"getting tweets before {oldest}")
         
         new_tweets = api.user_timeline(screen_name = screen_name, count = 200, max_id = oldest, tweet_mode = "extended")
        
         alltweets.extend(new_tweets)
         
         oldest = alltweets[-1].id - 1
-        
-        print(f"...{len(alltweets)} tweets downloaded so far")
+
+        if verbose is True:
+            print(f"...{len(alltweets)} tweets downloaded so far")
     
 
     print(f"Total number of tweets downloaded: {len(alltweets)}")
