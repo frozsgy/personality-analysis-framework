@@ -46,7 +46,7 @@ def train(method):
     for i in range(5):
 
         X = array(vector[:samples])
-        y = array(truths[i])
+        y = array(truths[i][:samples])
 
         clf = method
 
@@ -72,7 +72,7 @@ def train(method):
                 index2 += 1
             index1 += 1
         #print(prediction_new/30)
-        real = truths[i]
+        real = truths[i][:samples]
         label = list("OCEAN")
         scores.append([label[i], prediction_new/samples, accuracy_score(real, prediction), str(round(crossValScore,2)) + " (+/- " + str(round(crossValScores.std() * 2, 2)) + ")" ])
 

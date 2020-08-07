@@ -9,7 +9,7 @@ def run(name):
         create_csv(outtweets, name)
         create_csv(alltweets, name, True)
         print("Tweets have been downloaded succesfully")
-    else :
+    else:
         print("No tweets found for user")
 
 

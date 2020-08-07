@@ -15,26 +15,29 @@ import utils.preprocess
 import zemberek
 from vector import vector
 
-def calculate_vector(username, from_file = False, debug = False, verbose = False):
-    
+
+def calculate_vector(username, from_file=False, debug=False, verbose=False):
+
     # Data Collection
 
     if from_file is True:
         all_tweets = twitter.download.read_csv(username)
-    else :
-        all_tweets = twitter.download.get_all_tweets(username, debug, False, verbose)
+    else:
+        all_tweets = twitter.download.get_all_tweets(
+            username, debug, False, verbose)
 
     # Data Preprocess
 
-    ## Preprocess
+    # Preprocess
 
-    preprocessed = [tweet.map_tweet(utils.preprocess.preprocess) for tweet in all_tweets]
+    preprocessed = [tweet.map_tweet(utils.preprocess.preprocess)
+                    for tweet in all_tweets]
 
-    ## Normalization
+    # Normalization
 
     normalized = []
     for tweet in preprocessed:
-        try :
+        try:
             lang_id = zemberek.find_lang_id(tweet.get_tweet())
             if lang_id == "tr":
                 # continue, tweet is turkish
@@ -44,15 +47,16 @@ def calculate_vector(username, from_file = False, debug = False, verbose = False
                     normalized.append(tweet)
                 else:
                     # not sure if raising an error will cause the halting of the app, if that's the case, we can use a simple print for debugging purposes.
-                    raise AttributeError('Problem normalizing input : ' + n_response.error)
-            else :
+                    raise AttributeError(
+                        'Problem normalizing input : ' + n_response.error)
+            else:
                 # do not handle, tweet is turkish
                 pass
         except zemberek.grpc._channel._InactiveRpcError:
             print("Cannot communicate with Zemberek, exiting while normalizing.")
             exit()
 
-    ## Lemmatization
+    # Lemmatization
 
     for tweet in normalized:
         try:
@@ -71,9 +75,9 @@ def calculate_vector(username, from_file = False, debug = False, verbose = False
                     if l != "UNK":
                         tweet_lemmas.append(l)
                         tweet_pos.append(best.pos)
-                    else :
+                    else:
                         tweet_unknown += 1
-                    if re.search(plural_regex, best.analysis, flags = re.S) is not None:
+                    if re.search(plural_regex, best.analysis, flags=re.S) is not None:
                         tweet_plural += 1
                 if a.token == ".":
                     tweet_full_stop += 1
@@ -98,9 +102,9 @@ def calculate_vector(username, from_file = False, debug = False, verbose = False
         v.set_vector(tweet)
         tweet.set_vector(v)
 
-    ## Feature Extraction
-    ## Feature Reduction
-    ## Normalization
+    # Feature Extraction
+    # Feature Reduction
+    # Normalization
 
     sum_vector = np.array([0] * 20)
 
@@ -110,24 +114,25 @@ def calculate_vector(username, from_file = False, debug = False, verbose = False
         lemma_list = list(tweet.get_lemma())
         sum_lemmas += lemma_list
         v = np.array(tweet.get_vector().get_vector())
-        sum_vector = np.add(sum_vector, v)        
-    
+        sum_vector = np.add(sum_vector, v)
+
     sum_transformed = sum_vector.reshape(-1, 1)
-    normalized = KBinsDiscretizer(n_bins = [4], encode = 'ordinal').fit(sum_transformed).transform(sum_transformed)
+    normalized = KBinsDiscretizer(n_bins=[4], encode='ordinal').fit(
+        sum_transformed).transform(sum_transformed)
     normalized = normalized/4.
 
     if verbose is True:
         print(normalized.reshape(1, 20))
         print(sum_lemmas)
 
-    ## TF-IDF Weighting and Word2Vec based Word Embedding
+    # TF-IDF Weighting and Word2Vec based Word Embedding
 
-    cv = CountVectorizer(max_features = 20, ngram_range = (1, 1), max_df = 0.8)
+    cv = CountVectorizer(max_features=20, ngram_range=(1, 1), max_df=0.8)
     top_words = []
 
     try:
         word_count_vector = cv.fit_transform(sum_lemmas)
-        tfidf_transformer = TfidfTransformer(smooth_idf = True, use_idf = True)
+        tfidf_transformer = TfidfTransformer(smooth_idf=True, use_idf=True)
         tfidf_transformer.fit(word_count_vector)
 
         count_vector = cv.transform(sum_lemmas)
@@ -158,7 +163,7 @@ def calculate_vector(username, from_file = False, debug = False, verbose = False
             pass
     vv = (vector_np/20.).tolist()
 
-    ## Composition of Extracted Features and Word2Vec Vectors
+    # Composition of Extracted Features and Word2Vec Vectors
 
     all_vector = vv + normalized.reshape(1, 20).tolist()[0]
 
@@ -168,17 +173,17 @@ def calculate_vector(username, from_file = False, debug = False, verbose = False
     return all_vector
 
 
-def cluster(username, vector, debug = False):
+def cluster(username, vector, debug=False):
     # Clustering
     pass
-    
+
 
 if __name__ == '__main__':
     debugging = False
     from_file = False
     verbose = False
     args = sys.argv
-    if len(args) > 1 :
+    if len(args) > 1:
         username = args[1]
         if "--debug" in args:
             debugging = True
@@ -186,7 +191,7 @@ if __name__ == '__main__':
             from_file = True
         if "--verbose" in args:
             verbose = True
-    else :
+    else:
         username = input("Enter username: ")
     vector = calculate_vector(username, from_file, debugging, verbose)
     print(vector)

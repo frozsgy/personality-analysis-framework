@@ -3,14 +3,15 @@
 
 from datetime import datetime
 
+
 class Vector:
-    
+
     # time-related
     __morning = 0
     __afternoon = 0
     __evening = 0
     __night = 0
-    
+
     # zemberek related
     __word = 0
     __verb = 0
@@ -31,7 +32,6 @@ class Vector:
     __smiling_emoji = 0
     __negative_emoji = 0
 
-
     def __init__(self):
         pass
 
@@ -51,7 +51,7 @@ class Vector:
             # afternoon
             self.__morning += 1
             self.__afternoon += 1
-        else :
+        else:
             # evening
             self.__afternoon += 1
             self.__evening += 1
@@ -72,7 +72,7 @@ class Vector:
         self.__negative = pos_vector.get("Neg", 0)
         self.__full_stop = pos_vector.get("Fstop", 0)
         self.__incorrect = pos_vector.get("Inc", 0)
-    
+
     def __set_emojis(self, tweet):
         self.__smiling_emoji = tweet.get_smiling_emoji()
         self.__negative_emoji = tweet.get_negative_emoji()
