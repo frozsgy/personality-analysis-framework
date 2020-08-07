@@ -163,7 +163,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
             pass
     vv = (vector_np/20.).tolist()
 
-    # Composition of Extracted Features and Word2Vec Vectors
+    ## Composition of Extracted Features and Word2Vec Vectors
 
     all_vector = vv + normalized.reshape(1, 20).tolist()[0]
 
