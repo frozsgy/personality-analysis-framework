@@ -95,7 +95,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
             print("Cannot communicate with Zemberek, exiting while analyzing.")
             exit()
 
-    ## Vector Construction
+    # Vector Construction
 
     for tweet in normalized:
         v = vector.Vector()
@@ -125,7 +125,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
         print(normalized.reshape(1, 20))
         print(sum_lemmas)
 
-    # TF-IDF Weighting and Word2Vec based Word Embedding
+    ## TF-IDF Weighting and Word2Vec based Word Embedding
 
     cv = CountVectorizer(max_features=20, ngram_range=(1, 1), max_df=0.8)
     top_words = []
