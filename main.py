@@ -28,12 +28,12 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
 
     # Data Preprocess
 
-    # Preprocess
+    ## Preprocess
 
     preprocessed = [tweet.map_tweet(utils.preprocess.preprocess)
                     for tweet in all_tweets]
 
-    # Normalization
+    ## Normalization
 
     normalized = []
     for tweet in preprocessed:
@@ -56,7 +56,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
             print("Cannot communicate with Zemberek, exiting while normalizing.")
             exit()
 
-    # Lemmatization
+    ## Lemmatization
 
     for tweet in normalized:
         try:
@@ -95,16 +95,16 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
             print("Cannot communicate with Zemberek, exiting while analyzing.")
             exit()
 
-    # Vector Construction
+    ## Vector Construction
 
     for tweet in normalized:
         v = vector.Vector()
         v.set_vector(tweet)
         tweet.set_vector(v)
 
-    # Feature Extraction
-    # Feature Reduction
-    # Normalization
+    ## Feature Extraction
+    ## Feature Reduction
+    ## Normalization
 
     sum_vector = np.array([0] * 20)
 
