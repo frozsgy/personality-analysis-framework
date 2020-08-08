@@ -5,13 +5,13 @@ import json
 import requests
 
 import numpy as np
-from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 
 import twitter.download
 import utils.preprocess
+import utils.discretization
 import zemberek
 from vector import vector
 
@@ -117,9 +117,9 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
         sum_vector = np.add(sum_vector, v)
 
     sum_transformed = sum_vector.reshape(-1, 1)
-    normalized = KBinsDiscretizer(n_bins=[4], encode='ordinal').fit(
-        sum_transformed).transform(sum_transformed)
-    normalized = normalized/4.
+
+    discretizator = utils.discretization.Discretizer(sum_transformed)
+    normalized = np.array(discretizator.get_discretized())
 
     if verbose is True:
         print(normalized.reshape(1, 20))
