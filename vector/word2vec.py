@@ -18,7 +18,7 @@ def _serve():
     try:
         word = request.args.get('word')
         if word is None or len(word.strip()) == 0:
-            return "These aren't the droids you're looking for.", 204
+            return "These aren't the droids you're looking for."
         else :
             vector = word_vector[word]
             vector = vector.tolist()
