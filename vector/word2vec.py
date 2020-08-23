@@ -17,12 +17,12 @@ word_vector = KeyedVectors.load_word2vec_format(datapath(dir_path + "/" + "wikip
 def _serve():
     try:
         word = request.args.get('word')
-        if word is None:
-            return "These aren't the droids you're looking for."
+        if word is None or len(word.strip()) == 0:
+            return "These aren't the droids you're looking for.", 204
         else :
             vector = word_vector[word]
             vector = vector.tolist()
-            result = {'word2vec': [vector]}
+            result = {'word2vec': vector}
             return jsonify(result)
     except KeyError:
         result = {'word2vec': [""]}
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         # for using in development server.
         # app.run(debug=True, host='0.0.0.0', port=5000)
         # for using in production server.
-        http_server = WSGIServer(('', 5000), app)
+        http_server = WSGIServer(('0.0.0.0', 5000), app)
         http_server.serve_forever()
     except KeyboardInterrupt:
         print("Exiting Word2Vec server")

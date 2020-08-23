@@ -149,19 +149,22 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
     base_url = "http://127.0.0.1:5000/word2vec?word="
 
     vector_np = np.array([0] * 38)
+    total = 0
 
     for word in top_words:
         link = base_url + word
         req = requests.get(link)
         try:
-            v = req.json()['word2vec'][0]
+            v = req.json()['word2vec']
             if v == '':
                 v = [0] * 38
             v_np = np.array(v)
             vector_np = np.add(vector_np, v_np)
+            total += 1
         except:
             pass
-    vv = (vector_np/20.).tolist()
+    print(total)
+    vv = (vector_np/float(total)).tolist()
 
     ## Composition of Extracted Features and Word2Vec Vectors
 
