@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 def create_word_set():
