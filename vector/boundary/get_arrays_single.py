@@ -13,27 +13,22 @@ def create_word_set():
     return (word_set, cnt)
 
 def get_arrays(word_set, total_words, dimension_count):
-    min_array = [0] * dimension_count
-    max_array = [0] * dimension_count
-
-    is_first = True
-
+    min_array = [9999] * dimension_count
+    max_array = [-9999] * dimension_count
     base_url = "http://127.0.0.1:5000/word2vec?word="
 
     i = 0
 
     for word in word_set:
-        link = base_url + word
+        link = base_url + word.split()[0]
         req = requests.get(link)
         if (i % 10000 == 0):
             print("%" + str(100 * (float(i)/total_words)) + " DONE - Handling word nr: " + str(i) + " (" + word.split()[0] + ")")
+            print(min_array)
+            print(max_array)
         try:
-            v = req.json()['word2vec']
-            if is_first is True:
-                min_array = v[:]
-                max_array = v[:]
-                is_first = False
-            else :
+            v = req.json()['word2vec']            
+            if len(v) == dimension_count:
                 for j in range(dimension_count):
                     if v[j] > max_array[j]:
                         max_array[j] = v[j]

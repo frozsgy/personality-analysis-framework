@@ -13,6 +13,6 @@ with open("word-list.txt") as fp:
 print("Reading from word list is complete!")
 print("Writing to word set file...")
 with open("word-set.txt", "w") as output:
-    output.write('\n'.join(word_set))
+    output.write(''.join(word_set))
 
 print("Writing to word set is complete!")
