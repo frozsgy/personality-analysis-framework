@@ -75,14 +75,14 @@ if __name__ == "__main__":
 
     print("split array:")
     print(res)
-    min_array = res[0][:]
-    max_array = res[0][:]
+    min_array = res[0][0][:]
+    max_array = res[0][1][:]
     for i in range(cores):
         for j in range(dimensions):
-            if res[i][j] > max_array[j]:
-                max_array[j] = res[i][j]
-            if res[i][j] < min_array[j]:
-                min_array[j] = res[i][j]
+            if res[i][1][j] > max_array[j]:
+                max_array[j] = res[i][1][j]
+            if res[i][0][j] < min_array[j]:
+                min_array[j] = res[i][0][j]
 
     print("merged array:")
     print((min_array, max_array))
@@ -91,19 +91,4 @@ if __name__ == "__main__":
     print(min_array)
     print("max_array:")
     print(max_array)
-
-
-
-
-
-
-
-
-    word_set, cnt = create_word_set()
-    min_array, max_array = get_arrays(word_set, cnt, 38)
-    print("min array:")
-    print(min_array)
-    print("max_array:")
-    print(max_array)
-
 
