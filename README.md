@@ -12,8 +12,8 @@ Please refer to [INSTALL.md](INSTALL.md)
 
 ## Requirements
 
-* Python
-* Java 
+* Python 3.8
+* Java 8
 
 
 For a list of required Python libraries, refer to [requirements.txt](requirements.txt).
