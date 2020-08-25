@@ -182,7 +182,6 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
             total += 1
         except:
             pass
-    print(total)
     vv = (vector_np/float(total)).tolist()
 
     ## Composition of Extracted Features and Word2Vec Vectors
