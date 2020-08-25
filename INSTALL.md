@@ -1,5 +1,9 @@
 # Installation Manual for the Personality Analysis Framework
 
+## Creating config.yml 
+
+Use ```setup.py``` to generate the configuration file, ```config.yml```. After training the Word2Vec model, you need to run ```./config_boundaries.sh``` while the Word2Vec service is running in order to generate boundary values for the normalization process. This updates the ```config.yml``` with accordance to these values and it is crucial for the following steps.
+
 ## Training Phase
 
 ### Training Word2Vec Model
