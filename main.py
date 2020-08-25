@@ -19,6 +19,7 @@ from vector import vector
 config_yaml = open("config.yml")
 CONFIG = yaml.safe_load(config_yaml)
 
+
 def calculate_vector(username, from_file=False, debug=False, verbose=False):
 
     # Data Collection
@@ -149,10 +150,15 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
     if verbose is True:
         print(top_words)
 
-    base_url = CONFIG["word2vec"]["service"]["url"] + ":" + str(CONFIG["word2vec"]["service"]["port"]) + "/word2vec?word="
+    base_url = CONFIG["word2vec"]["service"]["url"] + ":" + \
+        str(CONFIG["word2vec"]["service"]["port"]) + "/word2vec?word="
 
     vector_np = np.array([0] * CONFIG["word2vec"]["vector"]["dimension"])
     total = 0
+
+    boundaries = CONFIG["word2vec"]["vector"]["boundaries"]
+    min_limits = [e['min'] for e in boundaries]
+    max_limits = [e['max'] for e in boundaries]
 
     for word in top_words:
         link = base_url + word
@@ -161,7 +167,17 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
             v = req.json()['word2vec']
             if v == '':
                 v = [0] * CONFIG["word2vec"]["vector"]["dimension"]
-            v_np = np.array(v)
+
+            v_norm = []
+            c = 0
+            for i in v:
+                if i < 0:
+                    v_norm.append(-i / min_limits[c])
+                else:
+                    v_norm.append(i / max_limits[c])
+                c += 1
+
+            v_np = np.array(v_norm)
             vector_np = np.add(vector_np, v_np)
             total += 1
         except:
