@@ -6,15 +6,12 @@ from datetime import datetime
 import tweepy
 import csv
 
-from twitter.secrets import *
 from twitter.tweet import *
 
-def get_all_tweets(screen_name, debug = False, save_raw_data = False, verbose = False):
-
-    secret = Secrets()
+def get_all_tweets(screen_name, CONFIG, debug = False, save_raw_data = False, verbose = False):
     
-    auth = tweepy.OAuthHandler(secret.consumer_key, secret.consumer_secret)
-    auth.set_access_token(secret.access_key, secret.access_secret)
+    auth = tweepy.OAuthHandler(CONFIG["twitter"]["consumer_key"], CONFIG["twitter"]["consumer_secret"])
+    auth.set_access_token(CONFIG["twitter"]["access_key"], CONFIG["twitter"]["access_secret"])
     api = tweepy.API(auth)
    
     alltweets = []  

@@ -1,5 +1,7 @@
 import os 
 
+import yaml
+
 import numpy as np
 
 from gensim.test.utils import datapath
@@ -7,6 +9,9 @@ from gensim.models import KeyedVectors
 
 from gevent.pywsgi import WSGIServer
 from flask import request, json, Flask, jsonify
+
+config_yaml = open("config.yml")
+CONFIG = yaml.safe_load(config_yaml)
 
 app = Flask(__name__)
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -34,10 +39,7 @@ def _serve():
 if __name__ == '__main__':
     try:
         print("Starting Word2Vec server")
-        # for using in development server.
-        # app.run(debug=True, host='0.0.0.0', port=5000)
-        # for using in production server.
-        http_server = WSGIServer(('0.0.0.0', 5000), app)
+        http_server = WSGIServer(('0.0.0.0', CONFIG["word2vec"]["service"]["port"]), app)
         http_server.serve_forever()
     except KeyboardInterrupt:
         print("Exiting Word2Vec server")

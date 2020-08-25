@@ -6,12 +6,15 @@ import multiprocessing
 import warnings
 import logging
 import string
+import yaml
 
 from gensim import utils
 from gensim.corpora import WikiCorpus
 from gensim.models import Word2Vec
 from gensim.models.word2vec import LineSentence
 
+config_yaml = open("../config.yml")
+CONFIG = yaml.safe_load(config_yaml)
 
 def tokenize_tr(content, token_min_len=2, token_max_len=50, lower=True):
     if lower:
@@ -49,8 +52,8 @@ output.close()
 
 logging.info("Vector training has started.")
 
-model = Word2Vec(LineSentence(wiki_out), size=38, window=7,
-                 min_count=3, workers=multiprocessing.cpu_count())
+model = Word2Vec(LineSentence(wiki_out), size=CONFIG["word2vec"]["vector"]["dimension"], window=CONFIG["word2vec"]["vector"]["window"],
+                 min_count=CONFIG["word2vec"]["vector"]["min_count"], workers=multiprocessing.cpu_count())
 logging.info("Vector training has completed.")
 
 

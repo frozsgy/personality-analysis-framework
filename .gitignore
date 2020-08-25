@@ -140,3 +140,6 @@ data/tweets/raw/*.csv
 
 # questionnaire data
 data/bigfive/*
+
+# config
+config.yml

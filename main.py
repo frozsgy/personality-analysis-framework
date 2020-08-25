@@ -3,6 +3,7 @@ import re
 
 import json
 import requests
+import yaml
 
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -15,6 +16,8 @@ import utils.discretization
 import zemberek
 from vector import vector
 
+config_yaml = open("config.yml")
+CONFIG = yaml.safe_load(config_yaml)
 
 def calculate_vector(username, from_file=False, debug=False, verbose=False):
 
@@ -24,7 +27,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
         all_tweets = twitter.download.read_csv(username)
     else:
         all_tweets = twitter.download.get_all_tweets(
-            username, debug, False, verbose)
+            username, CONFIG, debug, False, verbose)
 
     # Data Preprocess
 
@@ -146,9 +149,9 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
     if verbose is True:
         print(top_words)
 
-    base_url = "http://127.0.0.1:5000/word2vec?word="
+    base_url = CONFIG["word2vec"]["service"]["url"] + ":" + str(CONFIG["word2vec"]["service"]["port"]) + "/word2vec?word="
 
-    vector_np = np.array([0] * 38)
+    vector_np = np.array([0] * CONFIG["word2vec"]["vector"]["dimension"])
     total = 0
 
     for word in top_words:
@@ -157,7 +160,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
         try:
             v = req.json()['word2vec']
             if v == '':
-                v = [0] * 38
+                v = [0] * CONFIG["word2vec"]["vector"]["dimension"]
             v_np = np.array(v)
             vector_np = np.add(vector_np, v_np)
             total += 1
