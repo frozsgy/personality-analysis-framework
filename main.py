@@ -131,7 +131,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
 
     ## TF-IDF Weighting and Word2Vec based Word Embedding
 
-    cv = CountVectorizer(max_features=20, ngram_range=(1, 1), max_df=0.8)
+    cv = CountVectorizer(max_features=CONFIG["word2vec"]["vector"]["max_features"], ngram_range=(1, 1), max_df=0.8)
     top_words = []
 
     try:
