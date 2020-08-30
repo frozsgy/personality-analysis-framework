@@ -28,6 +28,12 @@ else:
 
 print("\nWord2Vec Details")
 try:
+    word2vec_max_features = int(input(
+        "Enter number of top words for TFxIDF: "))
+except:
+    print("Invalid top word count, using 25 as default")
+    word2vec_max_features = 25
+try:
     word2vec_dimension = int(input(
         "Enter number of dimensions for the Word2Vec embedding: "))
 except:
@@ -54,6 +60,7 @@ config = {"twitter": {"consumer_key": consumer_key,
         "url": word2vec_url,
         "port": word2vec_port},
     "vector": {
+        "max_features": word2vec_max_features,
         "dimension": word2vec_dimension,
         "window": word2vec_window,
         "min_count": word2vec_min_count}
