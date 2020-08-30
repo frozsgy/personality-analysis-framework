@@ -22,7 +22,11 @@ def get_arrays(word_set, total_words, result_list, index, lock):
 
     i = 0
     for word in word_set:
-        link = base_url + word.split()[0]
+        try:
+            link = base_url + word.split()[0]
+        except:
+            i += 1
+            continue
         req = requests.get(link)
         if (i % 10000 == 0):
             print("%" + str(100 * (float(i)/total_words)) + " DONE - Handling word nr: " + str(i) + " (" + word.split()[0] + ")")
