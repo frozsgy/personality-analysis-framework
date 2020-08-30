@@ -49,5 +49,5 @@ def read_word_set():
 
 if __name__ == '__main__':
 
-    make_corpus("trwiki-latest-pages-articles.xml.bz2")
+    make_corpus("../trwiki-latest-pages-articles.xml.bz2")
     make_set()
