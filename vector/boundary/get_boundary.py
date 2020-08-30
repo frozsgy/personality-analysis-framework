@@ -68,7 +68,7 @@ def run():
     min_array = res[0][0][:]
     max_array = res[0][1][:]
     for i in range(cores):
-        for j in range(dimensions):
+        for j in range(CONFIG["word2vec"]["vector"]["dimension"]):
             if res[i][1][j] > max_array[j]:
                 max_array[j] = res[i][1][j]
             if res[i][0][j] < min_array[j]:

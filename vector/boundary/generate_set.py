@@ -3,6 +3,7 @@ from gensim.corpora import WikiCorpus
 
 def make_corpus(in_f):
 
+    print('Generating dictionary from Wikipedia corpus...')
     output = open("word-list.txt", 'w')
     wiki = WikiCorpus(in_f)
 
