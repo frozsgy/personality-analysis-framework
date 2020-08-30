@@ -9,7 +9,7 @@ def make_corpus(in_f):
 
     i = 0
     for text in wiki.get_texts():
-        output.write(bytes('\n'.join(text), 'utf-8').decode('utf-8') + '\n')
+        output.write(bytes('\n'.join(text), 'utf-8').decode('utf-8'))
         i = i + 1
         if (i % 10000 == 0):
             print('Processed ' + str(i) + ' articles')
