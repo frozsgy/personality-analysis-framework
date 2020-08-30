@@ -174,10 +174,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
             v_norm = []
             c = 0
             for i in v:
-                if i < 0:
-                    v_norm.append(-i / min_limits[c])
-                else:
-                    v_norm.append(i / max_limits[c])
+                v_norm.append((i - min_limits[c]) / ((max_limits[c] - min_limits[c]) / 2) - 1)
                 c += 1
 
             v_np = np.array(v_norm)
