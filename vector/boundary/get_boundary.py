@@ -1,39 +1,47 @@
-import requests
-import json
 import threading
 import logging
 import multiprocessing
 import yaml
+from gensim.models import KeyedVectors
 
 from generate_set import read_word_set
 
 try:
+    print("Loading config.yml...")
     config_yaml = open("../../config.yml")
+    print("config.yml loaded")
 except:
     exit("config.yml file is missing, run setup.py")
 
 CONFIG = yaml.safe_load(config_yaml)
 
+try:
+    print("Loading Word2Vec model...")
+    word_vector = KeyedVectors.load_word2vec_format(
+        "../wikipedia-vector.bin", binary=True)
+    print("Word2Vec model loaded")
+except:
+    exit("Word2Vec model is missing, run train_model.sh")
+
+
 def get_arrays(word_set, total_words, result_list, index, lock):
     dimension_count = CONFIG["word2vec"]["vector"]["dimension"]
     min_array = [9999] * dimension_count
     max_array = [-9999] * dimension_count
-    base_url = CONFIG["word2vec"]["service"]["url"] + ":" + str(CONFIG["word2vec"]["service"]["port"]) + "/word2vec?word="
 
     i = 0
     for word in word_set:
         try:
-            link = base_url + word.split()[0]
+            word = word.split()[0]
         except:
             i += 1
             continue
-        req = requests.get(link)
-        if (i % 10000 == 0):
-            print("%" + str(100 * (float(i)/total_words)) + " DONE - Handling word nr: " + str(i) + " (" + word.split()[0] + ")")
-            print(min_array)
-            print(max_array)
+
+        if (i % 25000 == 0):
+            print("Thread {}: {:.2f}% complete, current word: {}".format(
+                index + 1, 100 * i/total_words, word))
         try:
-            v = req.json()['word2vec']            
+            v = word_vector[word].tolist()
             if len(v) == dimension_count:
                 for j in range(dimension_count):
                     if v[j] > max_array[j]:
@@ -52,25 +60,28 @@ def split(a, n):
     k, m = divmod(len(a), n)
     return (a[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n))
 
+
 def run():
     cores = multiprocessing.cpu_count()
     word_set, cnt = read_word_set()
-    
+
     res = [[]] * cores
     split_sets = list(split(list(word_set), cores))
 
     threads = []
     lock = threading.Lock()
+    print("Running on " + str(cores) + " threads")
 
     for i in range(cores):
-        thread = threading.Thread(target=get_arrays, args=(split_sets[i], cnt/cores, res, i, lock))
+        thread = threading.Thread(target=get_arrays, args=(
+            split_sets[i], cnt/cores, res, i, lock))
+        print("Thread {} created".format(i + 1))
         threads.append(thread)
         thread.start()
 
     for index, thread in enumerate(threads):
-        logging.info("Main    : before joining thread %d.", index)
         thread.join()
-        logging.info("Main    : thread %d done", index)
+        print("Thread {} completed".format(index + 1))
 
     min_array = res[0][0][:]
     max_array = res[0][1][:]
@@ -83,15 +94,18 @@ def run():
 
     return list(zip(min_array, max_array))
 
+
 if __name__ == "__main__":
     limits = run()
-    
+
     boundaries = []
     for e in limits:
         boundaries.append({"min": e[0], "max": e[1]})
     CONFIG["word2vec"]["vector"]["boundaries"] = boundaries
 
-    with open("../../config.yml", "w") as file:
-        yaml.dump(CONFIG, file)
-    
-
+    try:
+        with open("../../config.yml", "w") as file:
+            yaml.dump(CONFIG, file)
+        print("Boundary values saved to config.yml")
+    except:
+        print("Error saving boundary values to config.yml, check permissions")

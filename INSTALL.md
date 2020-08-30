@@ -2,13 +2,13 @@
 
 ## Creating config.yml 
 
-Use ```setup.py``` to generate the configuration file, ```config.yml```. After training the Word2Vec model, you need to run ```./config_boundaries.sh``` while the Word2Vec service is running in order to generate boundary values for the normalization process. This updates the ```config.yml``` with accordance to these values and it is crucial for the following steps.
+Use ```setup.py``` to generate the configuration file, ```config.yml```. After training the Word2Vec model, you need to run ```config_boundaries.sh``` to generate boundary values for the normalization process. This updates the ```config.yml``` with accordance to these values and it is crucial for the following steps.
 
 ## Training Phase
 
 ### Training Word2Vec Model
 
-In order to get Word2Vec representations properly, you need to train the Word2Vec library using ```./train_model.sh```. This step uses the Wikipedia archive for Turkish language to create a vector space to represent words.
+In order to get Word2Vec representations properly, you need to train the Word2Vec library using ```train_model.sh```. This step uses the Wikipedia archive for Turkish language to create a vector space to represent words.
 
 ### Acquiring Ground Truths
 
