@@ -14,7 +14,7 @@ except:
 
 CONFIG = yaml.safe_load(config_yaml)
 
-def get_arrays(word_set, total_words, result_list, index):
+def get_arrays(word_set, total_words, result_list, index, lock):
     dimension_count = CONFIG["word2vec"]["vector"]["dimension"]
     min_array = [9999] * dimension_count
     max_array = [-9999] * dimension_count
@@ -39,7 +39,9 @@ def get_arrays(word_set, total_words, result_list, index):
         except:
             pass
         i += 1
+    lock.acquire()
     result_list[index] = (min_array, max_array)
+    lock.release()
 
 
 def split(a, n):
@@ -54,9 +56,10 @@ def run():
     split_sets = list(split(list(word_set), cores))
 
     threads = []
+    lock = threading.Lock()
 
     for i in range(cores):
-        thread = threading.Thread(target=get_arrays, args=(split_sets[i], cnt/cores, res, i))
+        thread = threading.Thread(target=get_arrays, args=(split_sets[i], cnt/cores, res, i, lock))
         threads.append(thread)
         thread.start()
 
