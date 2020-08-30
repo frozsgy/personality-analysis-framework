@@ -16,9 +16,12 @@ import utils.discretization
 import zemberek
 from vector import vector
 
-config_yaml = open("config.yml")
-CONFIG = yaml.safe_load(config_yaml)
+try:
+    config_yaml = open("config.yml")
+except:
+    exit("config.yml file is missing, run setup.py")
 
+CONFIG = yaml.safe_load(config_yaml)
 
 def calculate_vector(username, from_file=False, debug=False, verbose=False):
 

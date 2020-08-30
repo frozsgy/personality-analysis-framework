@@ -13,7 +13,11 @@ from gensim.corpora import WikiCorpus
 from gensim.models import Word2Vec
 from gensim.models.word2vec import LineSentence
 
-config_yaml = open("../config.yml")
+try:
+    config_yaml = open("../config.yml")
+except:
+    exit("config.yml file is missing, run setup.py")
+
 CONFIG = yaml.safe_load(config_yaml)
 
 def tokenize_tr(content, token_min_len=2, token_max_len=50, lower=True):

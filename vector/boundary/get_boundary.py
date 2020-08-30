@@ -7,7 +7,11 @@ import yaml
 
 from generate_set import read_word_set
 
-config_yaml = open("../../config.yml")
+try:
+    config_yaml = open("../../config.yml")
+except:
+    exit("config.yml file is missing, run setup.py")
+
 CONFIG = yaml.safe_load(config_yaml)
 
 def get_arrays(word_set, total_words, result_list, index):

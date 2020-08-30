@@ -10,7 +10,11 @@ from gensim.models import KeyedVectors
 from gevent.pywsgi import WSGIServer
 from flask import request, json, Flask, jsonify
 
-config_yaml = open("config.yml")
+try:
+    config_yaml = open("./config.yml")
+except:
+    exit("config.yml file is missing, run setup.py")
+
 CONFIG = yaml.safe_load(config_yaml)
 
 app = Flask(__name__)
