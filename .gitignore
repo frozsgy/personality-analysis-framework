@@ -140,6 +140,7 @@ data/tweets/raw/*.csv
 
 # questionnaire data
 data/bigfive/*
+predictors/tpot/*.csv
 
 # config
 config.yml
