@@ -146,5 +146,5 @@ predictors/tpot/*.csv
 config.yml
 
 # vectors
-vectors
+vectors_*
 get_vectors.sh

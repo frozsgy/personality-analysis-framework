@@ -15,7 +15,7 @@ from tpot import TPOTClassifier
 class teapot:
 
     __features = 20
-    __dimensions = 75
+    __dimensions = 38
     __top_words = 25
     __window_size = 7
     __personality_type = 'E'
@@ -169,16 +169,24 @@ class teapot:
 
 def main():
     predictors = ["knn", "svm", "dt", "nb", "rf"]
-    t = teapot(75, "E")
-    scores = []
 
-    for p in predictors:
-        scores.append(t.score(p))
+    for personality in "OCEAN":
 
-    sorted_scores = sorted(scores, key=lambda x: x['average'], reverse=True)
-    print("\nBest values according to average scores")
-    for s in sorted_scores:
-        print("Average: {:.10f}  Pipeline: {}".format(s['average'], s['pipeline']))
+        print("PERSONALITY TYPE: " + personality)
+
+        t = teapot(38, personality)
+        scores = []
+
+        for p in predictors:
+            scores.append(t.score(p))
+
+        sorted_scores = sorted(scores, key=lambda x: x['average'], reverse=True)
+        print("\nBest values according to average scores for personality: " + personality)
+        for s in sorted_scores:
+            print("Average: {:.10f}  Pipeline: {}".format(s['average'], s['pipeline']))
+
+        print("-"*80)
+        print("-"*80)
 
     
 
