@@ -1,10 +1,18 @@
 import sys
 
 from twitter.download import *
+import yaml
+
+try:
+    config_yaml = open("config.yml")
+except:
+    exit("config.yml file is missing, run setup.py")
+
+CONFIG = yaml.safe_load(config_yaml)
 
 
 def run(name):
-    alltweets, outtweets = get_all_tweets(name, False, True)
+    alltweets, outtweets = get_all_tweets(name, CONFIG, False, True)
     if alltweets:
         create_csv(outtweets, name)
         create_csv(alltweets, name, True)
@@ -14,13 +22,6 @@ def run(name):
 
 
 if __name__ == "__main__":
-    """args = sys.argv
-    if len(args) > 1 :
-        username = args[1]
-    else :
-        name = input("Enter username to download tweets: ")
-    run(username)"""
-
     p = ['']
     for i in p:
         print("Downloading " + i)

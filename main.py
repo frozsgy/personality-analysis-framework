@@ -215,4 +215,5 @@ if __name__ == '__main__':
     else:
         username = input("Enter username: ")
     vector = calculate_vector(username, from_file, debugging, verbose)
-    print(vector)
+    print("'{}': {},".format(username, vector))
+    #print(vector)
