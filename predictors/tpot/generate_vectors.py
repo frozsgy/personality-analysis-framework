@@ -1,4 +1,4 @@
-data = open("vectors_all", "r").read()
+data = eval(open("vectors_all", "r").read())
 
 for i in "aceno":
     r = ""

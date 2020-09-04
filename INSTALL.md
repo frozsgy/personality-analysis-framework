@@ -14,11 +14,20 @@ In order to get Word2Vec representations properly, you need to train the Word2Ve
 
 You need to acquire OCEAN scores for your ground truth users. You may do it with a questionnaire, or other methods. We do not provide a concrete code block for this step, since it may vary vastly.
 
-You also need to create the vector representation of your ground truth users. -- TODO --
+You also need to create the vector representation of your ground truth users. While determining the best pipeline via TPOT, you will need 5 different ground truth vectors with the following structure:
+``` 
+OCEAN_SCORE,d0,d1,d2,....,dn
+```
 
-### Training SciKit Model
+The OCEAN_SCORE refers to the trait that the vector belongs to, and the rest is the values of the dimensions.
 
-After acquiring the ground truth vectors, you need to train your machine learning model to use with the system. -- TODO -- Save model using pickle or joblib.
+Place your ground truth vectors in the ```predictors/tpot``` folder with the following naming style: ```resultvector-{dimensions}-{top_words}-{window_size}-{trait}.csv``` where dimensions refers to the Word2Vec dimensions, top_words refers to the TFxIDF top word count, window_size refers to Word2Vec window size, and trait refers to the OCEAN trait.
+
+### Training Machine Learning Model
+
+After acquiring the ground truth vectors, you need to train your machine learning model to use with the system. In order to achieve the optimal training, we use TPOT. TPOT determines the optimal pipeline for each personality trait and reports the pipeline, which you should implement in your system.
+
+Run TPOT via the ```teapot.py``` file inside the ```predictors/tpot``` folder. It should take a while depending on your system to determine the best prediction algorithm. For each personality trait, you must copy the pipeline and paste it inside the ```main.py``` to allow the system to predict personality types.
 
 ## Creating Services
 

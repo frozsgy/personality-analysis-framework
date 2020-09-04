@@ -15,6 +15,7 @@ import utils.preprocess
 import utils.discretization
 import zemberek
 from vector import vector
+from predictors.predict import Predict
 
 try:
     config_yaml = open("config.yml")
@@ -194,9 +195,10 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
     return all_vector
 
 
-def cluster(username, vector, debug=False):
+def cluster(vector):
     # Clustering
-    pass
+    p = Predict()
+    return p.predict(vector)
 
 
 if __name__ == '__main__':
@@ -217,3 +219,5 @@ if __name__ == '__main__':
     vector = calculate_vector(username, from_file, debugging, verbose)
     print("'{}': {},".format(username, vector))
     #print(vector)
+    print("Predicted OCEAN score: "),
+    print(cluster(vector))

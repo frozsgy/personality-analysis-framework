@@ -128,9 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# secrets
-secrets.py
-
 # word2vec binaries
 *.bin
 
@@ -140,7 +137,6 @@ data/tweets/raw/*.csv
 
 # questionnaire data
 data/bigfive/*
-predictors/tpot/*.csv
 
 # config
 config.yml
@@ -148,3 +144,8 @@ config.yml
 # vectors
 vectors_*
 get_vectors.sh
+predictors/vectors
+predictors/tpot/*.csv
+
+# tpot related
+tpot_results/*

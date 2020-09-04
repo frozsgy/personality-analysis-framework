@@ -25,7 +25,7 @@ class teapot:
     __folds = 5
     __save_to_file = False
 
-    __columns = ['class']
+    __columns = []
     __original_data = None
     __data = None
     __data_features = None
@@ -42,7 +42,7 @@ class teapot:
         self.__verbosity = verbosity
         self.__folds = folds
         self.__save_to_file = save_to_file
-        self.__columns += ['c' + str(i)
+        self.__columns = ['class'] + ['c' + str(i)
                            for i in range(self.__features + self.__dimensions)]
 
         source_file = 'resultvector-{}-{}-{}-{}.csv'.format(self.__dimensions, self.__top_words, self.__window_size, self.__personality_type)
