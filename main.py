@@ -16,6 +16,7 @@ import utils.discretization
 import zemberek
 from vector import vector
 from predictors.predict import Predict
+from web.db import DB
 
 try:
     config_yaml = open("config.yml")
@@ -24,7 +25,7 @@ except:
 
 CONFIG = yaml.safe_load(config_yaml)
 
-def calculate_vector(username, from_file=False, debug=False, verbose=False):
+def calculate_vector(username, auth_pair, from_file=False, debug=False, verbose=False):
 
     # Data Collection
 
@@ -32,7 +33,7 @@ def calculate_vector(username, from_file=False, debug=False, verbose=False):
         all_tweets = twitter.download.read_csv(username)
     else:
         all_tweets = twitter.download.get_all_tweets(
-            username, CONFIG, debug, False, verbose)
+            username, CONFIG, auth_pair, debug, False, verbose)
 
     # Data Preprocess
 
@@ -200,6 +201,15 @@ def cluster(vector):
     p = Predict()
     return p.predict(vector)
 
+def get_ocean(username, user_id):
+    db = DB()
+    print("Calculating vectors for {}".format(username))
+    auth_pair = db.get_tokens_by_id(user_id)
+    vector = calculate_vector(username, auth_pair)
+    ocean = cluster(vector)
+    print("OCEAN scores for {} calculated".format(username))
+    db.update_ocean(user_id, ocean)
+
 
 if __name__ == '__main__':
     debugging = False
@@ -216,7 +226,9 @@ if __name__ == '__main__':
             verbose = True
     else:
         username = input("Enter username: ")
-    vector = calculate_vector(username, from_file, debugging, verbose)
+
+    auth_pair = ('', '') # fill as needed
+    vector = calculate_vector(username, auth_pair, from_file, debugging, verbose)
     print("'{}': {},".format(username, vector))
     #print(vector)
     print("Predicted OCEAN score: "),

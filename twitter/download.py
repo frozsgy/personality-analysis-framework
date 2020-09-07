@@ -8,10 +8,10 @@ import csv
 
 from twitter.tweet import *
 
-def get_all_tweets(screen_name, CONFIG, debug = False, save_raw_data = False, verbose = False):
+def get_all_tweets(screen_name, CONFIG, auth_pair, debug = False, save_raw_data = False, verbose = False):
     
     auth = tweepy.OAuthHandler(CONFIG["twitter"]["consumer_key"], CONFIG["twitter"]["consumer_secret"])
-    auth.set_access_token(CONFIG["twitter"]["access_key"], CONFIG["twitter"]["access_secret"])
+    auth.set_access_token(*auth_pair)
     api = tweepy.API(auth)
    
     alltweets = []  

@@ -149,3 +149,6 @@ predictors/tpot/*.csv
 
 # tpot related
 tpot_results/*
+
+# db
+web/personality.db

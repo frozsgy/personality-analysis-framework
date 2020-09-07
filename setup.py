@@ -1,12 +1,18 @@
 import yaml
+from web.db import DB
+
+print("Creating database file...")
+db = DB()
+db.create_db()
+
+print("Database file created")
 
 print("This tool will create the yaml file to store configuration details.")
 
 print("\nTwitter API Details")
 consumer_key = input("Consumer key: ")
 consumer_secret = input("Consumer secret: ")
-access_key = input("Access key: ")
-access_secret = input("Access secret: ")
+callback_url = input("Callback URL: ")
 
 print("\nWord2Vec Service Details")
 word2vec_check = input("Will you run Word2Vec service on another machine? y/n ")
@@ -53,8 +59,7 @@ except:
 
 config = {"twitter": {"consumer_key": consumer_key,
                       "consumer_secret": consumer_secret,
-                      "access_key": access_key,
-                      "access_secret": access_secret},
+                      "callback_url": callback_url},
           "word2vec": {
     "service": {
         "url": word2vec_url,
