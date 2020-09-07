@@ -92,6 +92,15 @@ class DB():
         except :
             return False
 
+    def get_status_by_id(self, id):
+        if self.check_if_user_exists(id) is False:
+            return False
+        try:
+            self.__cursor.execute(''' SELECT status from users WHERE id = ? ''', (id,))
+            return self.__cursor.fetchall()
+        except :
+            return False
+
     def get_username_by_id(self, id):
         if self.check_if_user_exists(id) is False:
             return False

@@ -2,6 +2,7 @@ import yaml
 
 from gevent.pywsgi import WSGIServer
 from flask import request, json, Flask, jsonify
+from flask_cors import CORS
 import tweepy
 
 from web.service import Service
@@ -18,6 +19,7 @@ except:
 CONFIG = yaml.safe_load(config_yaml)
 
 app = Flask(__name__)
+CORS(app)
 
 service = Service(CONFIG)
 db = DB()
@@ -25,15 +27,14 @@ db = DB()
 threads = []
 
 @app.route('/', methods=['GET'])
-def _serve():
+def _serve():    
     try:
-        r = "<br /><br /><center>"
-        r += "<a href='" + service.login() + "' target='_self'>click here to auth</a>"
-        r += "</center>"
-        return r
+        result = {'status': 200, 'url': service.login()}
+        return jsonify(result)
     except BaseException as e:
         print(e)
-        return "error"
+        result = {'status': 500, 'error': 'Exception occurred'}
+        return jsonify(result)
 
 
 @app.route('/callback', methods=['GET'])
@@ -58,14 +59,14 @@ def _callback():
         j = threading.Thread(target=get_ocean, args=(username, user_id))
         threads.append(j)
         j.start()
-        link = "<a href='http://localhost:8080/result?id="+str(user_id)+"&hash=" + service.hash(user_id, auth_pair[0], auth_pair[1]) + "'>clikc here</a>"
-        
-        return "downloading tweets " + link
+        result = {'status': 200, 'url': "result?id="+str(user_id)+"&hash=" + service.hash(user_id, auth_pair[0], auth_pair[1])}
+        return jsonify(result)
         j.join()
         
     except BaseException as e:
         print(e)
-        return "error occurred"
+        result = {'status': 500, 'error': 'Exception occurred'}
+        return jsonify(result)
 
 
 @app.route('/result', methods=['GET'])
@@ -76,14 +77,26 @@ def _result():
         auth_pair = db.get_tokens_by_id(uid)
         calculated_hash = service.hash(uid, auth_pair[0], auth_pair[1])
         if u_hash == calculated_hash:
-            ocean = db.get_ocean_by_id(uid)[0]
-            return "OCAEN: " + ' '.join(map(str, ocean))
+            try:
+                status = db.get_status_by_id(uid)[0]
+                response = dict()
+                if status[0] == "FINISHED":
+                    ocean = db.get_ocean_by_id(uid)[0]
+                    response = {'status': 200, 'finished': True, 'score': {'o': ocean[0], 'c': ocean[1], 'e': ocean[2], 'a': ocean[3], 'n': ocean[4]}}
+                else:
+                    response = {'status': 200, 'finished': False}
+                return jsonify(response)
+            except:
+                result = {'status': 500, 'error': 'Exception occurred'}
+                return jsonify(result)
         else :
-            return "error"
+            result = {'status': 500, 'error': 'Exception occurred'}
+            return jsonify(result)
         
     except BaseException as e:
         print(e)
-        return "error occurred"
+        result = {'status': 500, 'error': 'Exception occurred'}
+        return jsonify(result)
 
 if __name__ == '__main__':
     try:
