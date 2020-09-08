@@ -12,7 +12,8 @@ CONFIG = yaml.safe_load(config_yaml)
 
 
 def run(name):
-    alltweets, outtweets = get_all_tweets(name, CONFIG, False, True)
+    auth_pair = (None, None) #fill accordingly
+    alltweets, outtweets = get_all_tweets(name, CONFIG, auth_pair, False, True)
     if alltweets:
         create_csv(outtweets, name)
         create_csv(alltweets, name, True)

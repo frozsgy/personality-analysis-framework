@@ -1,4 +1,4 @@
-export const server = "http://localhost:8080/";
+export const server = "https://personality-api.ozanalpay.com/";
 
 export const getKey = (key = "name") => {
     const queryString = window.location.search;
