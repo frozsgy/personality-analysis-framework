@@ -52,7 +52,7 @@ class DB():
     def update_tokens(self, id, access_token, access_secret):
         res = True
         try:
-            self.__cursor.execute(''' UPDATE users SET access_token = ?, access_secret = ?, status = ? WHERE id = ? ''', (access_token, access_secret, "REPEAT", id,))
+            self.__cursor.execute(''' UPDATE users SET access_token = ?, access_secret = ? WHERE id = ? ''', (access_token, access_secret, id,))
             if self.__verbose:
                 print("Tokens updated for uid %s" % id)
         except:
