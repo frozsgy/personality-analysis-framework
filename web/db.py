@@ -19,7 +19,8 @@ class DB():
         """Creates the database and tables. This method should be called only during the installation.
         """
         try :
-            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS users (id bigint NOT NULL UNIQUE , username text, access_token varchar, access_secret varchar, shared boolean, survey boolean, score_o real, score_c real, score_e real, score_a real, score_n real, status varchar) ''')
+            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS users (id bigint NOT NULL UNIQUE , username text, access_token varchar, access_secret varchar, shared boolean, survey boolean) ''')
+            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY, uid bigint NOT NULL, hash varchar UNQIUE, score_o real, score_c real, score_e real, score_a real, score_n real, status varchar, FOREIGN KEY(uid) REFERENCES users(id)) ''')
         except:
             print('Cannot create DB')
         finally:
@@ -37,7 +38,7 @@ class DB():
             return res
         else :
             try:
-                self.__cursor.execute(''' INSERT into users VALUES(?,?,?,?,?,?,?,?,?,?,?, ?) ''', (id, username, access_token, access_secret, 0, 0, 0,0,0,0,0, "INIT"))
+                self.__cursor.execute(''' INSERT into users VALUES(?,?,?,?,?,?) ''', (id, username, access_token, access_secret, 0, 0,))
                 if self.__verbose:
                     print("User %s (%s) created succesfully" % (username, id))
             except:
@@ -61,15 +62,28 @@ class DB():
             self.__conn.commit()
             return res
 
-    def update_ocean(self, id, ocean):
+    def insert_ocean(self, s_hash, uid):
         res = True
         try:
-            self.__cursor.execute(''' UPDATE users SET score_o = ?, score_c = ?, score_e = ?, score_a = ?, score_n = ?, status = ? WHERE id = ? ''', (ocean['o'], ocean['c'], ocean['e'], ocean['a'], ocean['n'], "FINISHED", id,))
+            self.__cursor.execute(''' INSERT into results VALUES(?,?,?,?,?,?,?,?,?) ''', (None, uid, s_hash, 0, 0, 0, 0, 0, "INIT",))
             if self.__verbose:
-                print("OCEAN scores updated for uid %s" % id)
+                print("OCEAN scores initialized for hash %s" % s_hash)
         except:
             res = False
-            print("OCEAN scores could not be updated")
+            print("OCEAN scores could not be initialized")
+        finally:
+            self.__conn.commit()
+            return res
+
+    def finalize_ocean(self, s_hash, ocean):
+        res = True
+        try:
+            self.__cursor.execute(''' UPDATE results SET score_o = ?, score_c = ?, score_e = ?, score_a = ?, score_n = ?, status = ? WHERE hash = ? ''', (ocean['o'], ocean['c'], ocean['e'], ocean['a'], ocean['n'], "FINISHED", s_hash,))
+            if self.__verbose:
+                print("OCEAN scores set for hash %s" % s_hash)
+        except:
+            res = False
+            print("OCEAN scores could not be set")
         finally:
             self.__conn.commit()
             return res
@@ -83,21 +97,24 @@ class DB():
         except :
             return False
 
-    def get_ocean_by_id(self, id):
-        if self.check_if_user_exists(id) is False:
-            return False
+    def get_ocean_by_hash(self, hash):
         try:
-            self.__cursor.execute(''' SELECT score_o, score_c, score_e, score_a, score_n from users WHERE id = ? ''', (id,))
-            return self.__cursor.fetchall()
+            self.__cursor.execute(''' SELECT score_o, score_c, score_e, score_a, score_n from results WHERE hash = ? ''', (hash,))
+            return self.__cursor.fetchone()
         except :
             return False
 
-    def get_status_by_id(self, id):
-        if self.check_if_user_exists(id) is False:
-            return False
+    def get_status_by_hash(self, hash):
         try:
-            self.__cursor.execute(''' SELECT status from users WHERE id = ? ''', (id,))
-            return self.__cursor.fetchall()
+            self.__cursor.execute(''' SELECT status from results WHERE hash = ? ''', (hash,))
+            return self.__cursor.fetchone()[0]
+        except :
+            return False
+
+    def get_uid_by_hash(self, hash):
+        try:
+            self.__cursor.execute(''' SELECT uid from results WHERE hash = ? ''', (hash,))
+            return self.__cursor.fetchone()[0]
         except :
             return False
 

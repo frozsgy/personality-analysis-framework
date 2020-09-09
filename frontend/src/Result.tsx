@@ -1,57 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Grid,
   Divider,
   Header,
   Segment,
-  Progress,
+  Progress, Image,
 } from "semantic-ui-react";
 import fetch from "isomorphic-unfetch";
 import BottomMenu from "./Menu";
-import { server, getKey } from "./Constants";
-import RadarChart from "react-svg-radar-chart";
-import "react-svg-radar-chart/build/css/index.css";
+import { server, frontend, getKey } from "./Constants";
 
 const Result = () => {
-  const [loaded, setLoaded] = useState({ loaded: false });
-  const [scores, setScores] = useState({
-    o: 0.0,
-    c: 0.0,
-    e: 0.0,
-    a: 0.0,
-    n: 0.0,
-  });
+  const [state, setState] = useState({ loaded: false, image: '' });
 
   let percent = 30;
 
-  const id = getKey("id");
   const hash = getKey("hash");
 
-  const data = [
-    {
-      data: {
-        openness: scores.o / 4,
-        conscientiousness: scores.c / 4,
-        extraversion: scores.e / 4,
-        agreeableness: scores.a / 4,
-        neuroticism: scores.n / 4,
-      },
-      meta: { color: "green" },
-    },
-  ];
-
-  const captions = {
-    // columns
-    openness: "Açıklık",
-    conscientiousness: "Sorumluluk",
-    extraversion: "Dışadönüklük",
-    agreeableness: "Uyumluluk",
-    neuroticism: "Nevrotiklik",
-  };
-
   const startAnalysis = () => {
-    fetch(server + "result?id=" + id + "&hash=" + hash, {
+    fetch(server + "result?hash=" + hash, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -69,16 +37,9 @@ const Result = () => {
       .then((response) => {
         if (response.status === 200) {
           if (response.finished === true) {
-            const response_scores = response.score;
-            if (scores.o !== response_scores.o) {
-              setLoaded({ loaded: true });
-              setScores({
-                o: response_scores.o,
-                c: response_scores.c,
-                e: response_scores.e,
-                a: response_scores.a,
-                n: response_scores.n,
-              });
+            const response_image = response.hash;
+            if (state.image !== response_image) {
+              setState({ loaded: true, image: response_image});
             }
           } else {
             console.log("waiting");
@@ -94,23 +55,34 @@ const Result = () => {
       });
   };
 
-  startAnalysis();
+  
+
+  useEffect(() => startAnalysis());
+  
+  const imageUrl = server + "image?hash=" + state.image;
+
+  const shareLink = () => (<><meta name="twitter:card" content="Tweetleriniz ile Kişilik Analizi" />
+  <meta property="og:url" content={frontend} />
+  <meta property="og:title" content="Tweetleriniz ile Kişilik Analizi" />
+  <meta property="og:description" content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz. Makine Öğrenmesi kullanarak yöntemimizi sürekli iyileştiriyoruz." />
+  <meta property="og:image" content={imageUrl} /></>);
   return (
     <>
+    {state.loaded !== false && shareLink}
       <Segment>
         <Container>
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={8}>
                 <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
-                {scores.o !== 0.0 && (
-                  <RadarChart captions={captions} data={data} size={450} />
+                {state.loaded !== false && (
+                  <Image src={imageUrl} size='big' />
                 )}
-                {scores.o === 0.0 && (
+                {state.loaded === false && (
                   <>
                     <p>Tweetleriniz analiz ediliyor</p>
                     <Progress
-                      percent={loaded.loaded ? 100 : percent}
+                      percent={state.loaded ? 100 : percent}
                       autoSuccess
                       active
                     />

@@ -8,6 +8,7 @@ import tweepy
 from web.service import Service
 from web.db import DB
 from web.plot import plot_ocean
+from web.id import PushID
 
 import threading
 from main import calculate_vector, cluster, get_ocean
@@ -55,15 +56,17 @@ def _callback():
         user_id = me._json['id']
         username = me._json['screen_name']
         if db.check_if_user_exists(user_id) == False:
-            db.add_user(user_id, user_id, auth_pair[0], auth_pair[1])
+            db.add_user(user_id, username, auth_pair[0], auth_pair[1])
         else:
             db.update_tokens(user_id, auth_pair[0], auth_pair[1])
+        push_id = PushID()
+        r_hash = push_id.next_id()
+        db.insert_ocean(r_hash, user_id)
 
-        j = threading.Thread(target=get_ocean, args=(username, user_id))
+        j = threading.Thread(target=get_ocean, args=(username, user_id, r_hash))
         threads.append(j)
         j.start()
-        result = {'status': 200, 'url': "result?id=" +
-                  str(user_id)+"&hash=" + service.hash(user_id, auth_pair[0], auth_pair[1])}
+        result = {'status': 200, 'url': "result?hash=" + r_hash}
         return jsonify(result)
         j.join()
 
@@ -76,28 +79,19 @@ def _callback():
 @app.route('/result', methods=['GET'])
 def _result():
     try:
-        uid = request.args.get('id')
-        u_hash = request.args.get('hash')
-        auth_pair = db.get_tokens_by_id(uid)
-        calculated_hash = service.hash(uid, auth_pair[0], auth_pair[1])
-        if u_hash == calculated_hash:
-            try:
-                status = db.get_status_by_id(uid)[0]
-                response = dict()
-                if status[0] == "FINISHED":
-                    ocean = db.get_ocean_by_id(uid)[0]
-                    response = {'status': 200, 'finished': True, 'score': {
-                        'o': ocean[0], 'c': ocean[1], 'e': ocean[2], 'a': ocean[3], 'n': ocean[4]}}
-                else:
-                    response = {'status': 200, 'finished': False}
-                return jsonify(response)
-            except:
-                result = {'status': 500, 'error': 'Exception occurred'}
-                return jsonify(result)
+        r_hash = request.args.get('hash')
+        status = db.get_status_by_hash(r_hash)
+        response = dict()
+        if status == "FINISHED":
+            ocean = db.get_ocean_by_hash(r_hash)
+            user_id = db.get_uid_by_hash(r_hash)
+            username = db.get_username_by_id(user_id)
+            filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'], r_hash)
+            response = {'status': 200, 'finished': True, 'hash': r_hash}
         else:
-            result = {'status': 500, 'error': 'Exception occurred'}
-            return jsonify(result)
-
+            response = {'status': 200, 'finished': False}
+        return jsonify(response)
+        
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
@@ -107,12 +101,9 @@ def _result():
 @app.route('/image', methods=['GET'])
 def _image():
     try:
-        username = request.args.get('username')
-        ocean = []
-        for personality_type in "ocean":
-            ocean.append(float(request.args.get(personality_type)))
-        filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'])
-        return send_file(filename, mimetype='image/png')
+        r_hash = request.args.get('hash')
+        working_directory = CONFIG['pwd']
+        return send_file(f'{working_directory}/web/images/{r_hash}.png', mimetype='image/png')
 
     except BaseException as e:
         print(e)

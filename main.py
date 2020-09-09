@@ -201,14 +201,14 @@ def cluster(vector):
     p = Predict()
     return p.predict(vector)
 
-def get_ocean(username, user_id):
+def get_ocean(username, user_id, r_hash):
     db = DB()
     print("Calculating vectors for {}".format(username))
     auth_pair = db.get_tokens_by_id(user_id)
     vector = calculate_vector(username, auth_pair)
     ocean = cluster(vector)
     print("OCEAN scores for {} calculated".format(username))
-    db.update_ocean(user_id, ocean)
+    db.finalize_ocean(r_hash, ocean)
 
 
 if __name__ == '__main__':

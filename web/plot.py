@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 
-def plot_ocean(username, scores, working_directory, url):
+def plot_ocean(username, scores, working_directory, url, r_hash):
     labels = ["Açıklık",
               "Sorumluluk",
               "Dışadönüklük",
@@ -43,5 +43,5 @@ def plot_ocean(username, scores, working_directory, url):
              verticalalignment='center', transform=ax.transAxes)
 
     now = int(time.time())
-    plt.savefig(f'{working_directory}/web/images/{username}-ocean-{now}', bbox_inches='tight')
-    return f'{working_directory}/web/images/{username}-ocean-{now}.png'
+    plt.savefig(f'{working_directory}/web/images/{r_hash}', bbox_inches='tight')
+    return f'{working_directory}/web/images/{r_hash}.png'
