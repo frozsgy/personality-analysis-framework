@@ -27,8 +27,9 @@ db = DB()
 
 threads = []
 
+
 @app.route('/', methods=['GET'])
-def _serve():    
+def _serve():
     try:
         result = {'status': 200, 'url': service.login()}
         return jsonify(result)
@@ -46,7 +47,8 @@ def _callback():
 
         auth_pair = service.callback(oauth_token, oauth_verifier)
 
-        auth = tweepy.OAuthHandler(CONFIG["twitter"]["consumer_key"], CONFIG["twitter"]["consumer_secret"])
+        auth = tweepy.OAuthHandler(CONFIG["twitter"]["consumer_key"],
+                                   CONFIG["twitter"]["consumer_secret"])
         auth.set_access_token(*auth_pair)
         api = tweepy.API(auth)
         me = api.me()
@@ -56,14 +58,15 @@ def _callback():
             db.add_user(user_id, user_id, auth_pair[0], auth_pair[1])
         else:
             db.update_tokens(user_id, auth_pair[0], auth_pair[1])
-       
+
         j = threading.Thread(target=get_ocean, args=(username, user_id))
         threads.append(j)
         j.start()
-        result = {'status': 200, 'url': "result?id="+str(user_id)+"&hash=" + service.hash(user_id, auth_pair[0], auth_pair[1])}
+        result = {'status': 200, 'url': "result?id=" +
+                  str(user_id)+"&hash=" + service.hash(user_id, auth_pair[0], auth_pair[1])}
         return jsonify(result)
         j.join()
-        
+
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
@@ -83,21 +86,23 @@ def _result():
                 response = dict()
                 if status[0] == "FINISHED":
                     ocean = db.get_ocean_by_id(uid)[0]
-                    response = {'status': 200, 'finished': True, 'score': {'o': ocean[0], 'c': ocean[1], 'e': ocean[2], 'a': ocean[3], 'n': ocean[4]}}
+                    response = {'status': 200, 'finished': True, 'score': {
+                        'o': ocean[0], 'c': ocean[1], 'e': ocean[2], 'a': ocean[3], 'n': ocean[4]}}
                 else:
                     response = {'status': 200, 'finished': False}
                 return jsonify(response)
             except:
                 result = {'status': 500, 'error': 'Exception occurred'}
                 return jsonify(result)
-        else :
+        else:
             result = {'status': 500, 'error': 'Exception occurred'}
             return jsonify(result)
-        
+
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
+
 
 @app.route('/image', methods=['GET'])
 def _image():
@@ -113,6 +118,7 @@ def _image():
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
+
 
 if __name__ == '__main__':
     try:

@@ -75,10 +75,10 @@ config = {"twitter": {"consumer_key": consumer_key,
         "max_features": word2vec_max_features,
         "dimension": word2vec_dimension,
         "window": word2vec_window,
-        "min_count": word2vec_min_count},
+        "min_count": word2vec_min_count}},
     "pwd": pwd,
     "url": url
-}}
+}
 
 with open("config.yml", "w") as file:
     yaml.dump(config, file)
