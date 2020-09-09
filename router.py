@@ -1,12 +1,13 @@
 import yaml
 
 from gevent.pywsgi import WSGIServer
-from flask import request, json, Flask, jsonify
+from flask import request, json, Flask, jsonify, send_file
 from flask_cors import CORS
 import tweepy
 
 from web.service import Service
 from web.db import DB
+from web.plot import plot_ocean
 
 import threading
 from main import calculate_vector, cluster, get_ocean
@@ -93,6 +94,21 @@ def _result():
             result = {'status': 500, 'error': 'Exception occurred'}
             return jsonify(result)
         
+    except BaseException as e:
+        print(e)
+        result = {'status': 500, 'error': 'Exception occurred'}
+        return jsonify(result)
+
+@app.route('/image', methods=['GET'])
+def _image():
+    try:
+        username = request.args.get('username')
+        ocean = []
+        for personality_type in "ocean":
+            ocean.append(float(request.args.get(personality_type)))
+        filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'])
+        return send_file(filename, mimetype='image/png')
+
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}

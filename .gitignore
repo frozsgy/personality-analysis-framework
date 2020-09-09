@@ -152,3 +152,6 @@ tpot_results/*
 
 # db
 web/personality.db
+
+# plots
+web/images/*.png

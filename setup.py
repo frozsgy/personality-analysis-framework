@@ -1,5 +1,6 @@
 import yaml
 from web.db import DB
+import os
 
 print("Creating database file...")
 db = DB()
@@ -8,6 +9,10 @@ db.create_db()
 print("Database file created")
 
 print("This tool will create the yaml file to store configuration details.")
+
+print("\nGeneral Details")
+url = input("URL of your website(with http or https prefix): ")
+
 
 print("\nTwitter API Details")
 consumer_key = input("Consumer key: ")
@@ -57,6 +62,8 @@ except:
     print("Invalid minimum count, using 3 as default")
     word2vec_min_count = 3
 
+pwd = os.getcwd()
+
 config = {"twitter": {"consumer_key": consumer_key,
                       "consumer_secret": consumer_secret,
                       "callback_url": callback_url},
@@ -68,7 +75,9 @@ config = {"twitter": {"consumer_key": consumer_key,
         "max_features": word2vec_max_features,
         "dimension": word2vec_dimension,
         "window": word2vec_window,
-        "min_count": word2vec_min_count}
+        "min_count": word2vec_min_count},
+    "pwd": pwd,
+    "url": url
 }}
 
 with open("config.yml", "w") as file:

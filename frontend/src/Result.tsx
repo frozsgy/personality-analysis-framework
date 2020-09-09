@@ -109,10 +109,13 @@ const Result = () => {
                 {scores.o === 0.0 && (
                   <>
                     <p>Tweetleriniz analiz ediliyor</p>
-                    <Progress percent={loaded.loaded ? 100 : percent} autoSuccess active />
+                    <Progress
+                      percent={loaded.loaded ? 100 : percent}
+                      autoSuccess
+                      active
+                    />
                   </>
                 )}
-
                 <Divider />
               </Grid.Column>
             </Grid.Row>
