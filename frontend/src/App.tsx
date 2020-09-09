@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import './App.css';
+import "./App.css";
 import Home from "./Home";
 import Callback from "./Callback";
 import Result from "./Result";
+import Share from "./Share";
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
         <Route path="/result">
           <Result />
         </Route>
-        
+        <Route exact path="/share/:hash" component={Share} />
+
         <Route path="*">404 not found</Route>
       </Switch>
     </Router>

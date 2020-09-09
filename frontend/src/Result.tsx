@@ -61,7 +61,7 @@ const Result = () => {
   
   const imageUrl = server + "image?hash=" + state.image;
 
-  const shareLink = () => (<><meta name="twitter:card" content="Tweetleriniz ile Kişilik Analizi" />
+  const shareLink = () => (<><meta name="twitter:card" content="summary_large_image" />
   <meta property="og:url" content={frontend} />
   <meta property="og:title" content="Tweetleriniz ile Kişilik Analizi" />
   <meta property="og:description" content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz. Makine Öğrenmesi kullanarak yöntemimizi sürekli iyileştiriyoruz." />
@@ -73,10 +73,10 @@ const Result = () => {
         <Container>
           <Grid>
             <Grid.Row columns="equal" centered>
-              <Grid.Column width={8}>
+              <Grid.Column width={16}>
                 <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
                 {state.loaded !== false && (
-                  <Image src={imageUrl} size='big' />
+                  <Image src={imageUrl} size='big' centered/>
                 )}
                 {state.loaded === false && (
                   <>

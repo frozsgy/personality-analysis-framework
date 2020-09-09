@@ -12,7 +12,7 @@ ReactDOM.render(
       <Container>
         <Grid>
           <Grid.Row columns="equal" centered>
-            <Grid.Column width={16}>
+            <Grid.Column width={12}>
               <App />
 
             </Grid.Column>
