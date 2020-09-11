@@ -4,3 +4,10 @@
 div {
   white-space: pre-wrap;
 }
+
+.ui.table thead tr:first-child > th {
+  position: sticky !important;
+  top: 0;
+  z-index: 2;
+  background-color: white !important;
+}

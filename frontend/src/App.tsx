@@ -5,6 +5,7 @@ import Home from "./Home";
 import Callback from "./Callback";
 import Result from "./Result";
 import Share from "./Share";
+import Questionnaire from "./Questionnaire";
 
 function App() {
   return (
@@ -20,7 +21,9 @@ function App() {
           <Result />
         </Route>
         <Route exact path="/share/:hash" component={Share} />
-
+        <Route path="/questionnaire">
+          <Questionnaire />
+        </Route>
         <Route path="*">404 not found</Route>
       </Switch>
     </Router>

@@ -12,7 +12,7 @@ import BottomMenu from "./Menu";
 import { server, frontend, getKey } from "./Constants";
 
 const Result = () => {
-  const [state, setState] = useState({ loaded: false, image: '' });
+  const [state, setState] = useState({ loaded: false, image: '', dataSize: undefined });
 
   let percent = 30;
 
@@ -39,10 +39,9 @@ const Result = () => {
           if (response.finished === true) {
             const response_image = response.hash;
             if (state.image !== response_image) {
-              setState({ loaded: true, image: response_image});
+              setState({ loaded: true, image: response_image, dataSize: response.dataSize});
             }
           } else {
-            console.log("waiting");
             percent += 5;
             setTimeout(startAnalysis, 5000);
           }
@@ -78,7 +77,7 @@ const Result = () => {
                 {state.loaded !== false && (
                   <Image src={imageUrl} size='big' centered/>
                 )}
-                {state.loaded === false && (
+                {state.loaded === false && state.dataSize !== 0 && (
                   <>
                     <p>Tweetleriniz analiz ediliyor</p>
                     <Progress
@@ -86,6 +85,11 @@ const Result = () => {
                       autoSuccess
                       active
                     />
+                  </>
+                )}
+                {state.loaded === false && state.dataSize === 0 && (
+                  <>
+                    <p>Kişilik analizi yapılabilmesi için yeterli orijinal tweetiniz yok :(</p>
                   </>
                 )}
                 <Divider />

@@ -41,7 +41,10 @@ class Service:
         else: 
             return True
 
-    def hash(self, uid, token, secret):
-        phrase = "id={}&tk={}&sc={}".format(uid, token, secret) 
-        return hashlib.sha256(phrase.encode()).hexdigest()
-
+    def get_total_tweets(self, token, secret):
+        auth = tweepy.OAuthHandler(self.__consumer_key, self.__consumer_secret, self.__callback_url)
+        auth.set_access_token(token, secret)
+        api = tweepy.API(auth)
+        user_data = api.me()._json
+        total_tweets = user_data.get('statuses_count', 0)
+        return total_tweets
