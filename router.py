@@ -45,6 +45,7 @@ def _callback():
     try:
         oauth_token = request.args.get('oauth_token')
         oauth_verifier = request.args.get('oauth_verifier')
+        auto_share = request.args.get('auto_share')
 
         auth_pair = service.callback(oauth_token, oauth_verifier)
 
@@ -61,12 +62,12 @@ def _callback():
             db.update_tokens(user_id, auth_pair[0], auth_pair[1])
         push_id = PushID()
         r_hash = push_id.next_id()
-        db.insert_ocean(r_hash, user_id)
+        db.insert_ocean(r_hash, user_id, auto_share)
 
         j = threading.Thread(target=get_ocean, args=(username, user_id, r_hash))
         threads.append(j)
         j.start()
-        result = {'status': 200, 'url': "result?hash=" + r_hash}
+        result = {'status': 200, 'url': "result?hash=" + r_hash + "&auto_share=" + auto_share}
         return jsonify(result)
         j.join()
 
@@ -80,8 +81,10 @@ def _callback():
 def _result():
     try:
         r_hash = request.args.get('hash')
+        auto_share = request.args.get('auto_share')
         status = db.get_status_by_hash(r_hash)
         user_id = db.get_uid_by_hash(r_hash)
+        auth_pair = db.get_tokens_by_id(user_id)
         total_tweets = service.get_total_tweets(*auth_pair)
         if total_tweets < 10:
             total_tweets = 0
@@ -90,9 +93,10 @@ def _result():
         response = dict()
         if status == "FINISHED":
             ocean = db.get_ocean_by_hash(r_hash)
-            auth_pair = db.get_tokens_by_id(user_id)
             username = db.get_username_by_id(user_id)
             filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'], r_hash)
+            if auto_share == "true":
+                service.share_result(r_hash, *auth_pair)
             response = {'status': 200, 'finished': True, 'hash': r_hash, 'dataSize': total_tweets}
         else:
             response = {'status': 200, 'finished': False, 'dataSize': total_tweets}
@@ -139,7 +143,7 @@ def _questionnaire():
         # save results to db
         # 50 questions on table: result_id, int[50], ocean
 
-        result = {'status': 200, 'scores': {'o': o, 'c': c, 'e': e, 'a': a, 'n': n}}
+        result = {'status': 200, 'scores': {'o': o/40, 'c': c/40, 'e': e/40, 'a': a/40, 'n': n/40}}
         return jsonify(result)
         
     except BaseException as e:

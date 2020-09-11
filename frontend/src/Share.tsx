@@ -2,7 +2,6 @@ import React from "react";
 import {
   Container,
   Grid,
-  Divider,
   Header,
   Segment,
   Image,
@@ -24,7 +23,6 @@ const Share = (props: any) => {
               <Grid.Column width={16}>
                 <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
                 <Image src={imageUrl} size="big" centered/>
-                <Divider />
               </Grid.Column>
             </Grid.Row>
           </Grid>

@@ -20,7 +20,7 @@ class DB():
         """
         try :
             self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS users (id bigint NOT NULL UNIQUE , username text, access_token varchar, access_secret varchar, shared boolean, survey boolean) ''')
-            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY, uid bigint NOT NULL, hash varchar UNQIUE, score_o real, score_c real, score_e real, score_a real, score_n real, status varchar, FOREIGN KEY(uid) REFERENCES users(id)) ''')
+            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS results (id integer PRIMARY KEY, uid bigint NOT NULL, hash varchar UNQIUE, score_o real, score_c real, score_e real, score_a real, score_n real, status varchar, auto_share boolean, FOREIGN KEY(uid) REFERENCES users(id)) ''')
         except:
             print('Cannot create DB')
         finally:
@@ -62,10 +62,10 @@ class DB():
             self.__conn.commit()
             return res
 
-    def insert_ocean(self, s_hash, uid):
+    def insert_ocean(self, s_hash, uid, auto_share = False):
         res = True
         try:
-            self.__cursor.execute(''' INSERT into results VALUES(?,?,?,?,?,?,?,?,?) ''', (None, uid, s_hash, 0, 0, 0, 0, 0, "INIT",))
+            self.__cursor.execute(''' INSERT into results VALUES(?,?,?,?,?,?,?,?,?,?) ''', (None, uid, s_hash, 0, 0, 0, 0, 0, "INIT", auto_share))
             if self.__verbose:
                 print("OCEAN scores initialized for hash %s" % s_hash)
         except:

@@ -2,24 +2,29 @@ import React, { useState, useEffect } from "react";
 import {
   Container,
   Grid,
-  Divider,
   Header,
   Segment,
-  Progress, Image,
+  Progress,
+  Image,
 } from "semantic-ui-react";
 import fetch from "isomorphic-unfetch";
 import BottomMenu from "./Menu";
 import { server, frontend, getKey } from "./Constants";
 
 const Result = () => {
-  const [state, setState] = useState({ loaded: false, image: '', dataSize: undefined });
+  const [state, setState] = useState({
+    loaded: false,
+    image: "",
+    dataSize: undefined,
+  });
 
-  let percent = 30;
+  let percent = 99;
 
   const hash = getKey("hash");
+  const autoShare = localStorage.getItem("autoShare") === "true";
 
   const startAnalysis = () => {
-    fetch(server + "result?hash=" + hash, {
+    fetch(server + "result?hash=" + hash + "&auto_share=" + autoShare, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,9 +42,14 @@ const Result = () => {
       .then((response) => {
         if (response.status === 200) {
           if (response.finished === true) {
+            localStorage.setItem("autoShare", JSON.stringify(false));
             const response_image = response.hash;
             if (state.image !== response_image) {
-              setState({ loaded: true, image: response_image, dataSize: response.dataSize});
+              setState({
+                loaded: true,
+                image: response_image,
+                dataSize: response.dataSize,
+              });
             }
           } else {
             percent += 5;
@@ -54,20 +64,25 @@ const Result = () => {
       });
   };
 
-  
-
   useEffect(() => startAnalysis());
-  
+
   const imageUrl = server + "image?hash=" + state.image;
 
-  const shareLink = () => (<><meta name="twitter:card" content="summary_large_image" />
-  <meta property="og:url" content={frontend} />
-  <meta property="og:title" content="Tweetleriniz ile Kişilik Analizi" />
-  <meta property="og:description" content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz. Makine Öğrenmesi kullanarak yöntemimizi sürekli iyileştiriyoruz." />
-  <meta property="og:image" content={imageUrl} /></>);
+  const shareLink = () => (
+    <>
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta property="og:url" content={frontend} />
+      <meta property="og:title" content="Tweetleriniz ile Kişilik Analizi" />
+      <meta
+        property="og:description"
+        content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz. Makine Öğrenmesi kullanarak yöntemimizi sürekli iyileştiriyoruz."
+      />
+      <meta property="og:image" content={imageUrl} />
+    </>
+  );
   return (
     <>
-    {state.loaded !== false && shareLink}
+      {state.loaded !== false && shareLink}
       <Segment>
         <Container>
           <Grid>
@@ -75,7 +90,7 @@ const Result = () => {
               <Grid.Column width={16}>
                 <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
                 {state.loaded !== false && (
-                  <Image src={imageUrl} size='big' centered/>
+                  <Image src={imageUrl} size="big" centered />
                 )}
                 {state.loaded === false && state.dataSize !== 0 && (
                   <>
@@ -89,10 +104,12 @@ const Result = () => {
                 )}
                 {state.loaded === false && state.dataSize === 0 && (
                   <>
-                    <p>Kişilik analizi yapılabilmesi için yeterli orijinal tweetiniz yok :(</p>
+                    <p>
+                      Kişilik analizi yapılabilmesi için yeterli orijinal
+                      tweetiniz yok :(
+                    </p>
                   </>
                 )}
-                <Divider />
               </Grid.Column>
             </Grid.Row>
           </Grid>

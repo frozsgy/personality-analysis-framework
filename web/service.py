@@ -6,11 +6,15 @@ class Service:
     __consumer_key = None
     __consumer_secret = None
     __callback_url = None
+    __working_dir = None
+    __url = None
 
     def __init__(self, CONFIG):
         self.__consumer_key = CONFIG['twitter']['consumer_key']
         self.__consumer_secret = CONFIG['twitter']['consumer_secret']
         self.__callback_url = CONFIG['twitter']['callback_url']
+        self.__working_dir = CONFIG['pwd']
+        self.__url = CONFIG['url']
 
     def login(self):
         auth = tweepy.OAuthHandler(self.__consumer_key, self.__consumer_secret, self.__callback_url)
@@ -48,3 +52,11 @@ class Service:
         user_data = api.me()._json
         total_tweets = user_data.get('statuses_count', 0)
         return total_tweets
+
+    def share_result(self, r_hash, token, secret):
+        auth = tweepy.OAuthHandler(self.__consumer_key, self.__consumer_secret, self.__callback_url)
+        auth.set_access_token(token, secret)
+        api = tweepy.API(auth)
+        image_path = f'{self.__working_dir}/web/images/{r_hash}.png'
+        status = "Tweetlerime göre kişilik analimizi yaptırdım! Sen de yaptırmak istersen: " + self.__url 
+        api.update_with_media(image_path, status)

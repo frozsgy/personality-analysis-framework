@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid, Divider, Header, Segment } from "semantic-ui-react";
+import { Container, Grid, Header, Segment } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
 import BottomMenu from "./Menu";
@@ -11,27 +11,17 @@ const Home = () => {
   const oauth_token = getKey("oauth_token");
   const oauth_verifier = getKey("oauth_verifier");
 
-  /*const getResults = () => {
-        if (response.status === 200) {
-            if (response.finished === true) {
-                const scores = response.score;
-                console.log(scores);
-            } else {
-                console.log("waiting");
-                setTimeout(startAnalysis, 1500);
-            }
-          } else {
-              console.log("error");
-          }
-    }*/
-
   const startAnalysis = () => {
+    const autoShare = localStorage.getItem("autoShare") === "true";
+
     fetch(
       server +
         "callback?oauth_token=" +
         oauth_token +
         "&oauth_verifier=" +
-        oauth_verifier,
+        oauth_verifier +
+        "&auto_share=" +
+        autoShare,
       {
         method: "GET",
         headers: {
@@ -66,8 +56,6 @@ const Home = () => {
               <Grid.Column width={16}>
                 <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
                 <p>Tweetleriniz analiz ediliyor</p>
-
-                <Divider />
               </Grid.Column>
             </Grid.Row>
           </Grid>
