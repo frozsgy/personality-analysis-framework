@@ -18,6 +18,7 @@ import { server } from "./Constants";
     - translate questionnaire questions
     - implement user id and hash in form as hidden fields
     - display result after succesful submission
+    - make all fields required :: currently not implemented to allow testing
 
 */
 
