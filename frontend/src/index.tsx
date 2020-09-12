@@ -5,6 +5,8 @@ import App from "./App";
 import "semantic-ui-css/semantic.min.css";
 import { Container, Grid } from "semantic-ui-react";
 import * as serviceWorker from "./serviceWorker";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,6 +16,7 @@ ReactDOM.render(
           <Grid.Row columns="equal" centered>
             <Grid.Column width={12}>
               <App />
+              <ToastContainer />
             </Grid.Column>
           </Grid.Row>
         </Grid>

@@ -11,15 +11,14 @@ import {
   Button,
 } from "semantic-ui-react";
 import BottomMenu from "./Menu";
+import { useHistory } from "react-router-dom";
 import { server, getKey } from "./Constants";
+import { toast } from "react-toastify";
 
 /*
     -- TODO --
     - translate questionnaire questions
-    - implement user id and hash in form as hidden fields
     - display result after succesful submission
-    - make all fields required :: currently not implemented to allow testing
-
 */
 
 declare global {
@@ -33,15 +32,16 @@ for (let i = 0; i < 50; i++) {
 const Questionnaire = () => {
   const [state, setState] = useState({ questions: map });
 
+  const history = useHistory();
+
   const handleChange = (e: any, { name, value }: TableCellProps) => {
     const prevState = state.questions;
     prevState[name] = Number(value);
     setState({ questions: prevState });
   };
 
-  const hash = getKey('hash');
-  const secret = getKey('secret');
-
+  const hash = getKey("hash");
+  const secret = getKey("secret");
 
   const questionTexts = [
     "I Am the life of the party.",
@@ -163,6 +163,13 @@ const Questionnaire = () => {
       formData.append("q" + i, questions["q" + i].toString());
     }
 
+    for (let i = 0; i < 50; i++) {
+      if (questions["q" + i] === 0) {
+        toast.error("Anketteki her soruyu işaretlemeniz gerekiyor.");
+        return;
+      }
+    }
+
     fetch(server + "questionnaire", {
       method: "POST",
       headers: {
@@ -179,14 +186,12 @@ const Questionnaire = () => {
           return Promise.reject(new Error("Unknown error occurred"));
         }
       })
-      /*.then((response) => {
-        setTimeout(() => {
+      .then((response) => {
+        /*setTimeout(() => {
           history.push("/dashboard");
-        }, 2000);
-        toast.success("Login successfull! Redirecting...");
-        localStorage.setItem('isLoggedIn', JSON.stringify(true));
-        localStorage.setItem("loggedInTime", JSON.stringify(Date.now()));
-      })*/
+        }, 2000);*/
+        toast.success("Anketi doldurduğunuz için teşekkürler!");
+      })
       .catch((e) => {
         //toast.error(e.message);
         localStorage.setItem("isLoggedIn", JSON.stringify(false));
@@ -225,9 +230,19 @@ const Questionnaire = () => {
 
                     <Table.Body>{renderQuestions()}</Table.Body>
                   </Table>
-                  <Button type="submit" primary floated="right" fluid>
-                    Gönder
-                  </Button>
+                  <Button.Group widths="8" fluid>
+                    <Button
+                      onClick={() => {
+                        history.push("share/" + hash);
+                      }}
+                    >
+                      Sonuç sayfasına geri dön
+                    </Button>
+
+                    <Button type="submit" primary floated="right">
+                      Gönder
+                    </Button>
+                  </Button.Group>
                 </Form>
               </Grid.Column>
             </Grid.Row>

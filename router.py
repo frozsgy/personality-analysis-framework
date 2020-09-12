@@ -24,7 +24,7 @@ app = Flask(__name__)
 CORS(app)
 
 service = Service(CONFIG)
-db = DB(True)
+db = DB()
 
 threads = []
 
@@ -68,7 +68,8 @@ def _callback():
         threads.append(j)
         j.start()
         q_hash = service.hash(user_id, *auth_pair)
-        result = {'status': 200, 'url': "result?hash=" + r_hash + "&auto_share=" + auto_share, 'secret': q_hash, 'hash': r_hash}
+        result = {'status': 200, 'url': "result?hash=" + r_hash +
+                  "&auto_share=" + auto_share, 'secret': q_hash, 'hash': r_hash}
         return jsonify(result)
         j.join()
 
@@ -102,11 +103,12 @@ def _result():
         else:
             response = {'status': 200, 'finished': False, 'dataSize': total_tweets}
         return jsonify(response)
-        
+
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
+
 
 @app.route('/validate', methods=['POST'])
 def _validate():
@@ -121,9 +123,9 @@ def _validate():
             q_hash = service.hash(user_id, *auth_pair)
             if status == "FINISHED" and q_hash == r_secret:
                 survey_status = db.get_survey_by_hash(r_hash) == 1
-                response = {'status': 200, 'finished': survey_status}            
+                response = {'status': 200, 'finished': survey_status}
         return jsonify(response)
-        
+
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
@@ -141,6 +143,7 @@ def _image():
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
+
 
 @app.route('/questionnaire', methods=['POST'])
 def _questionnaire():
@@ -162,14 +165,10 @@ def _questionnaire():
                     q_responses.append(int(q_r))
 
                 ocean_results = service.calculate_ocean(q_responses)
-                
-                # -- TODO --
-                # save results to db
-                # 50 questions on table: result_id, int[50], ocean
-
+                db.save_questionnaire(r_hash, q_responses, ocean_results)
                 result = {'status': 200, 'scores': ocean_results}
         return jsonify(result)
-        
+
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}

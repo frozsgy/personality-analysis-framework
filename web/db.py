@@ -134,3 +134,17 @@ class DB():
             return self.__cursor.fetchone()[0]
         except :
             return False
+
+    def save_questionnaire(self, r_hash, responses, ocean):
+        res = True
+        try:
+            data = (None, r_hash, *responses, ocean['o'], ocean['c'], ocean['e'], ocean['a'], ocean['n'])
+            self.__cursor.execute(''' INSERT into questionnaire VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ''', data)
+            if self.__verbose:
+                print("Questionnaire responses saved for hash %s" % s_hash)
+        except:
+            res = False
+            print("Questionnaire responses could not be saved")
+        finally:
+            self.__conn.commit()
+            return res

@@ -57,7 +57,6 @@ const Result = () => {
                 image: response_image,
                 dataSize: response.dataSize,
               });
-              //getCanQuestionnaire();
             }
           } else {
             percent += 5;
@@ -149,7 +148,7 @@ const redirectQuestionnaire = () => {
   const participateQuestionnaire = (
     <Segment textAlign="center" vertical>
       <Form.Field>
-        <Button color="green" size="large" onClick={redirectQuestionnaire}>
+        <Button color="green" size="large" onClick={redirectQuestionnaire} fluid>
           Bilime katkı sağlamak ister misiniz?
         </Button>
       </Form.Field>
