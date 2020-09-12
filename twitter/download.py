@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname("__file__"), '..')))
 from datetime import datetime
+from time import time
 
 import tweepy
 import csv
@@ -82,8 +83,9 @@ def create_csv(outtweets, screen_name, save_raw_data = False):
 
     file_name = f'data/tweets/{screen_name}_tweets.csv'
 
+    now = int(time())
     if save_raw_data is True:
-        file_name = f'data/tweets/raw/{screen_name}_tweets.csv'
+        file_name = f'data/tweets/raw/{screen_name}_tweets_{now}.csv'
             
     with open(file_name, 'w') as f:
         writer = csv.writer(f)

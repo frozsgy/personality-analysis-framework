@@ -205,7 +205,13 @@ def get_ocean(username, user_id, r_hash):
     db = DB()
     print("Calculating vectors for {}".format(username))
     auth_pair = db.get_tokens_by_id(user_id)
-    vector = calculate_vector(username, auth_pair)
+
+    alltweets, outtweets = twitter.download.get_all_tweets(username, CONFIG, auth_pair, False, True)
+    if alltweets:
+        twitter.download.create_csv(outtweets, username)
+        twitter.download.create_csv(alltweets, username, True)
+
+    vector = calculate_vector(username, auth_pair, True)
     ocean = cluster(vector)
     print("OCEAN scores for {} calculated".format(username))
     db.finalize_ocean(r_hash, ocean)
