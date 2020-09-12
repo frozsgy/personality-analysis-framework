@@ -24,7 +24,7 @@ app = Flask(__name__)
 CORS(app)
 
 service = Service(CONFIG)
-db = DB()
+db = DB(True)
 
 threads = []
 
@@ -67,7 +67,8 @@ def _callback():
         j = threading.Thread(target=get_ocean, args=(username, user_id, r_hash))
         threads.append(j)
         j.start()
-        result = {'status': 200, 'url': "result?hash=" + r_hash + "&auto_share=" + auto_share}
+        q_hash = service.hash(user_id, *auth_pair)
+        result = {'status': 200, 'url': "result?hash=" + r_hash + "&auto_share=" + auto_share, 'secret': q_hash, 'hash': r_hash}
         return jsonify(result)
         j.join()
 
@@ -107,6 +108,27 @@ def _result():
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
 
+@app.route('/validate', methods=['POST'])
+def _validate():
+    try:
+        r_hash = request.form.get('hash')
+        r_secret = request.form.get('secret')
+        response = {'status': 500, 'error': 'Exception occurred'}
+        if r_hash is not None and r_secret is not None:
+            status = db.get_status_by_hash(r_hash)
+            user_id = db.get_uid_by_hash(r_hash)
+            auth_pair = db.get_tokens_by_id(user_id)
+            q_hash = service.hash(user_id, *auth_pair)
+            if status == "FINISHED" and q_hash == r_secret:
+                survey_status = db.get_survey_by_hash(r_hash) == 1
+                response = {'status': 200, 'finished': survey_status}            
+        return jsonify(response)
+        
+    except BaseException as e:
+        print(e)
+        result = {'status': 500, 'error': 'Exception occurred'}
+        return jsonify(result)
+
 
 @app.route('/image', methods=['GET'])
 def _image():
@@ -124,26 +146,28 @@ def _image():
 def _questionnaire():
     try:
         r_hash = request.form.get('hash')
-        r_id = request.form.get('id')
-        # -- TODO --
-        # check if id matches hash
-        q_responses = []
-        for i in range(50):
-            q_id = "q" + str(i)
-            q_r = request.form.get(q_id)
-            q_responses.append(int(q_r))
+        r_secret = request.form.get('secret')
+        result = {'status': 500, 'error': 'Exception occurred'}
+        if r_hash is not None and r_secret is not None:
+            status = db.get_status_by_hash(r_hash)
+            user_id = db.get_uid_by_hash(r_hash)
+            auth_pair = db.get_tokens_by_id(user_id)
+            q_hash = service.hash(user_id, *auth_pair)
+            if q_hash == r_secret and db.get_survey_by_hash(r_hash) == 0:
 
-        e = 20 + q_responses[0] - q_responses[5] + q_responses[10] - q_responses[15] + q_responses[20] - q_responses[25] + q_responses[30] - q_responses[35] + q_responses[40] - q_responses[45]
-        a = 14 - q_responses[1] + q_responses[6] - q_responses[11] + q_responses[16] - q_responses[21] + q_responses[26] - q_responses[31] + q_responses[36] + q_responses[41] + q_responses[46]
-        c = 14 + q_responses[2] - q_responses[7] + q_responses[12] - q_responses[17] + q_responses[22] - q_responses[27] + q_responses[32] - q_responses[37] + q_responses[42] + q_responses[48]
-        n = 38 - q_responses[3] + q_responses[8] - q_responses[13] + q_responses[18] - q_responses[23] - q_responses[28] - q_responses[33] - q_responses[38] - q_responses[43] - q_responses[48]
-        o = 8 + q_responses[4] - q_responses[9] + q_responses[14] - q_responses[19] + q_responses[24] - q_responses[29] + q_responses[34] + q_responses[39] + q_responses[44] + q_responses[49]
+                q_responses = []
+                for i in range(50):
+                    q_id = "q" + str(i)
+                    q_r = request.form.get(q_id)
+                    q_responses.append(int(q_r))
 
-        # -- TODO --
-        # save results to db
-        # 50 questions on table: result_id, int[50], ocean
+                ocean_results = service.calculate_ocean(q_responses)
+                
+                # -- TODO --
+                # save results to db
+                # 50 questions on table: result_id, int[50], ocean
 
-        result = {'status': 200, 'scores': {'o': o/40, 'c': c/40, 'e': e/40, 'a': a/40, 'n': n/40}}
+                result = {'status': 200, 'scores': ocean_results}
         return jsonify(result)
         
     except BaseException as e:

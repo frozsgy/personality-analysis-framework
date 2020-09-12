@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -6,6 +7,8 @@ import {
   Segment,
   Progress,
   Image,
+  Form,
+  Button,
 } from "semantic-ui-react";
 import fetch from "isomorphic-unfetch";
 import BottomMenu from "./Menu";
@@ -16,9 +19,12 @@ const Result = () => {
     loaded: false,
     image: "",
     dataSize: undefined,
+    canQuestionnaire: false,
   });
 
   let percent = 99;
+
+  const history = useHistory();
 
   const hash = getKey("hash");
   const autoShare = localStorage.getItem("autoShare") === "true";
@@ -46,10 +52,12 @@ const Result = () => {
             const response_image = response.hash;
             if (state.image !== response_image) {
               setState({
+                ...state,
                 loaded: true,
                 image: response_image,
                 dataSize: response.dataSize,
               });
+              //getCanQuestionnaire();
             }
           } else {
             percent += 5;
@@ -64,7 +72,60 @@ const Result = () => {
       });
   };
 
-  useEffect(() => startAnalysis());
+  const formData = new URLSearchParams();
+  const secret = localStorage.getItem("secret");
+  const r_hash = localStorage.getItem("hash");
+  const takenTime = localStorage.getItem("takenTime");
+  if (Date.now() - Number(takenTime) < 15 * 60 * 1000) {
+    if (
+      r_hash !== undefined &&
+      secret !== undefined &&
+      r_hash !== null &&
+      secret !== null
+    ) {
+      formData.append("hash", JSON.parse(r_hash));
+      formData.append("secret", JSON.parse(secret));
+    }
+  }
+
+  const getCanQuestionnaire = () => {
+    fetch(server + "validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: formData,
+    })
+      .then((r) => {
+        if (r.ok) {
+          return r;
+        }
+        if (r.status === 401 || r.status === 403 || r.status === 500) {
+          return Promise.reject(new Error("Unknown error occurred"));
+        }
+      })
+      .then((r) => r!.json())
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.finished);
+          if (response.finished === false) {
+            if (state.canQuestionnaire !== true) {
+              setState({ ...state, canQuestionnaire: true });
+            }
+          }
+        } else {
+          console.log("error");
+        }
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+  };
+
+  useEffect(() => {
+    startAnalysis();
+    getCanQuestionnaire();
+  });
 
   const imageUrl = server + "image?hash=" + state.image;
 
@@ -80,6 +141,21 @@ const Result = () => {
       <meta property="og:image" content={imageUrl} />
     </>
   );
+
+const redirectQuestionnaire = () => {
+  history.push("questionnaire?" + formData);   
+}
+
+  const participateQuestionnaire = (
+    <Segment textAlign="center" vertical>
+      <Form.Field>
+        <Button color="green" size="large" onClick={redirectQuestionnaire}>
+          Bilime katkı sağlamak ister misiniz?
+        </Button>
+      </Form.Field>
+    </Segment>
+  );
+
   return (
     <>
       {state.loaded !== false && shareLink}
@@ -90,7 +166,10 @@ const Result = () => {
               <Grid.Column width={16}>
                 <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
                 {state.loaded !== false && (
-                  <Image src={imageUrl} size="big" centered />
+                  <>
+                    <Image src={imageUrl} size="big" centered />
+                    {state.canQuestionnaire ? participateQuestionnaire : ""}
+                  </>
                 )}
                 {state.loaded === false && state.dataSize !== 0 && (
                   <>

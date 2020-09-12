@@ -39,7 +39,10 @@ const Home = () => {
       })
       .then((r) => r!.json())
       .then((response) => {
-        history.push(response!.url);
+        localStorage.setItem("secret", JSON.stringify(response.secret));
+        localStorage.setItem("hash", JSON.stringify(response.hash));
+        localStorage.setItem("takenTime", JSON.stringify(Date.now()));     
+        history.push(response!.url);        
       })
       .catch((e) => {
         console.log(e.message);

@@ -60,3 +60,15 @@ class Service:
         image_path = f'{self.__working_dir}/web/images/{r_hash}.png'
         status = "Tweetlerime göre kişilik analimizi yaptırdım! Sen de yaptırmak istersen: " + self.__url 
         api.update_with_media(image_path, status)
+
+    def hash(self, uid, token, secret):
+        phrase = "id={}&tk={}&sc={}".format(uid, token, secret) 
+        return hashlib.sha256(phrase.encode()).hexdigest()
+
+    def calculate_ocean(self, q_responses):
+        e = 20 + q_responses[0] - q_responses[5] + q_responses[10] - q_responses[15] + q_responses[20] - q_responses[25] + q_responses[30] - q_responses[35] + q_responses[40] - q_responses[45]
+        a = 14 - q_responses[1] + q_responses[6] - q_responses[11] + q_responses[16] - q_responses[21] + q_responses[26] - q_responses[31] + q_responses[36] + q_responses[41] + q_responses[46]
+        c = 14 + q_responses[2] - q_responses[7] + q_responses[12] - q_responses[17] + q_responses[22] - q_responses[27] + q_responses[32] - q_responses[37] + q_responses[42] + q_responses[48]
+        n = 38 - q_responses[3] + q_responses[8] - q_responses[13] + q_responses[18] - q_responses[23] - q_responses[28] - q_responses[33] - q_responses[38] - q_responses[43] - q_responses[48]
+        o = 8 + q_responses[4] - q_responses[9] + q_responses[14] - q_responses[19] + q_responses[24] - q_responses[29] + q_responses[34] + q_responses[39] + q_responses[44] + q_responses[49]
+        return {'o': o/40, 'c': c/40, 'e': e/40, 'a': a/40, 'n': n/40}

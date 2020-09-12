@@ -19,8 +19,9 @@ class DB():
         """Creates the database and tables. This method should be called only during the installation.
         """
         try :
-            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS users (id bigint NOT NULL UNIQUE , username text, access_token varchar, access_secret varchar, shared boolean, survey boolean) ''')
-            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS results (id integer PRIMARY KEY, uid bigint NOT NULL, hash varchar UNQIUE, score_o real, score_c real, score_e real, score_a real, score_n real, status varchar, auto_share boolean, FOREIGN KEY(uid) REFERENCES users(id)) ''')
+            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS users (id bigint NOT NULL UNIQUE , username text, access_token varchar, access_secret varchar) ''')
+            self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS results (id integer PRIMARY KEY, uid bigint NOT NULL, hash varchar UNQIUE, score_o real, score_c real, score_e real, score_a real, score_n real, status varchar, auto_share boolean, survey boolean, FOREIGN KEY(uid) REFERENCES users(id)) ''')
+            self.__cursor.execute('''  CREATE TABLE IF NOT EXISTS questionnaire (id integer PRIMARY KEY, r_id integer, q0 integer, q1 integer, q2 integer, q3 integer, q4 integer, q5 integer, q6 integer, q7 integer, q8 integer, q9 integer, q10 integer, q11 integer, q12 integer, q13 integer, q14 integer, q15 integer, q16 integer, q17 integer, q18 integer, q19 integer, q20 integer, q21 integer, q22 integer, q23 integer, q24 integer, q25 integer, q26 integer, q27 integer, q28 integer, q29 integer, q30 integer, q31 integer, q32 integer, q33 integer, q34 integer, q35 integer, q36 integer, q37 integer, q38 integer, q39 integer, q40 integer, q41 integer, q42 integer, q43 integer, q44 integer, q45 integer, q46 integer, q47 integer, q48 integer, q49 integer, score_o real, score_c real, score_e real, score_a real, score_n real, FOREIGN KEY(r_id) REFERENCES scores(id)) ''')
         except:
             print('Cannot create DB')
         finally:
@@ -38,7 +39,7 @@ class DB():
             return res
         else :
             try:
-                self.__cursor.execute(''' INSERT into users VALUES(?,?,?,?,?,?) ''', (id, username, access_token, access_secret, 0, 0,))
+                self.__cursor.execute(''' INSERT into users VALUES(?,?,?,?) ''', (id, username, access_token, access_secret, ))
                 if self.__verbose:
                     print("User %s (%s) created succesfully" % (username, id))
             except:
@@ -65,7 +66,7 @@ class DB():
     def insert_ocean(self, s_hash, uid, auto_share = False):
         res = True
         try:
-            self.__cursor.execute(''' INSERT into results VALUES(?,?,?,?,?,?,?,?,?,?) ''', (None, uid, s_hash, 0, 0, 0, 0, 0, "INIT", auto_share))
+            self.__cursor.execute(''' INSERT into results VALUES(?,?,?,?,?,?,?,?,?,?,?) ''', (None, uid, s_hash, 0, 0, 0, 0, 0, "INIT", auto_share, 0))
             if self.__verbose:
                 print("OCEAN scores initialized for hash %s" % s_hash)
         except:
@@ -114,6 +115,13 @@ class DB():
     def get_uid_by_hash(self, hash):
         try:
             self.__cursor.execute(''' SELECT uid from results WHERE hash = ? ''', (hash,))
+            return self.__cursor.fetchone()[0]
+        except :
+            return False
+
+    def get_survey_by_hash(self, hash):
+        try:
+            self.__cursor.execute(''' SELECT survey from results WHERE hash = ? ''', (hash,))
             return self.__cursor.fetchone()[0]
         except :
             return False

@@ -11,7 +11,7 @@ import {
   Button,
 } from "semantic-ui-react";
 import BottomMenu from "./Menu";
-import { server } from "./Constants";
+import { server, getKey } from "./Constants";
 
 /*
     -- TODO --
@@ -32,11 +32,17 @@ for (let i = 0; i < 50; i++) {
 
 const Questionnaire = () => {
   const [state, setState] = useState({ questions: map });
+
   const handleChange = (e: any, { name, value }: TableCellProps) => {
     const prevState = state.questions;
     prevState[name] = Number(value);
     setState({ questions: prevState });
   };
+
+  const hash = getKey('hash');
+  const secret = getKey('secret');
+
+
   const questionTexts = [
     "I Am the life of the party.",
     "I Feel little concern for others.",
@@ -149,6 +155,10 @@ const Questionnaire = () => {
     const { questions } = state;
 
     const formData = new URLSearchParams();
+    if (hash !== null && secret !== null) {
+      formData.append("hash", hash);
+      formData.append("secret", secret);
+    }
     for (let i = 0; i < 50; i++) {
       formData.append("q" + i, questions["q" + i].toString());
     }
