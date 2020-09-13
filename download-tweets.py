@@ -15,8 +15,8 @@ def run(name):
     auth_pair = (None, None) #fill accordingly
     alltweets, outtweets = get_all_tweets(name, CONFIG, auth_pair, False, True)
     if alltweets:
-        create_csv(outtweets, name)
-        create_csv(alltweets, name, True)
+        create_csv(outtweets, name, "")
+        create_csv(alltweets, name, "", True)
         print("Tweets have been downloaded succesfully")
     else:
         print("No tweets found for user")

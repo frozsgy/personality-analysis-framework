@@ -202,14 +202,14 @@ def cluster(vector):
     return p.predict(vector)
 
 def get_ocean(username, user_id, r_hash):
-    db = DB()
+    db = DB(CONFIG)
     print("Calculating vectors for {}".format(username))
     auth_pair = db.get_tokens_by_id(user_id)
 
     alltweets, outtweets = twitter.download.get_all_tweets(username, CONFIG, auth_pair, False, True)
     if alltweets:
-        twitter.download.create_csv(outtweets, username)
-        twitter.download.create_csv(alltweets, username, True)
+        twitter.download.create_csv(outtweets, username, r_hash)
+        twitter.download.create_csv(alltweets, username, r_hash, True)
 
     vector = calculate_vector(username, auth_pair, True)
     ocean = cluster(vector)

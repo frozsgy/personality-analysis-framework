@@ -79,13 +79,13 @@ def get_all_tweets(screen_name, CONFIG, auth_pair, debug = False, save_raw_data 
     return outtweets
     
 
-def create_csv(outtweets, screen_name, save_raw_data = False):
+def create_csv(outtweets, screen_name, r_hash, save_raw_data = False):
 
-    file_name = f'data/tweets/{screen_name}_tweets.csv'
+    file_name = f'data/tweets/{screen_name}_tweets_{r_hash}.csv'
 
     now = int(time())
     if save_raw_data is True:
-        file_name = f'data/tweets/raw/{screen_name}_tweets_{now}.csv'
+        file_name = f'data/tweets/raw/{screen_name}_tweets_{r_hash}_{now}.csv'
             
     with open(file_name, 'w') as f:
         writer = csv.writer(f)

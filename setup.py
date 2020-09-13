@@ -1,17 +1,24 @@
 import yaml
 from web.db import DB
+from mysql.connector import connect
 import os
-
-print("Creating database file...")
-db = DB()
-db.create_db()
-
-print("Database file created")
 
 print("This tool will create the yaml file to store configuration details.")
 
 print("\nGeneral Details")
 url = input("URL of your website(with http or https prefix): ")
+
+print("\nDatabase Details")
+db_host = input("Database host: ")
+db_user = input("Database username: ")
+db_pass = input("Database password: ")
+db_name = input("Database name: ")
+try:
+    connect(user=db_user, password=db_pass, host=db_host, database=db_name, autocommit=True)
+    print("Database connection succesful")
+except:
+    print("Can't connect to database, check credentials")
+    exit()
 
 
 print("\nTwitter API Details")
@@ -77,10 +84,24 @@ config = {"twitter": {"consumer_key": consumer_key,
         "window": word2vec_window,
         "min_count": word2vec_min_count}},
     "pwd": pwd,
-    "url": url
+    "url": url,
+    "database": {
+        "user": db_user,
+        "password": db_pass,
+        "host": db_host,
+        "database": db_name
+    }
 }
 
 with open("config.yml", "w") as file:
     yaml.dump(config, file)
 
 print("Configuration file created successfully")
+
+
+print("Creating database tables...")
+db = DB(config)
+db.create_db()
+
+print("Tables created successfully")
+

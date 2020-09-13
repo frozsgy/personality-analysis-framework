@@ -24,7 +24,7 @@ app = Flask(__name__)
 CORS(app)
 
 service = Service(CONFIG)
-db = DB()
+db = DB(CONFIG)
 
 threads = []
 
@@ -164,8 +164,9 @@ def _questionnaire():
                     q_r = request.form.get(q_id)
                     q_responses.append(int(q_r))
 
+                hash_id = db.get_id_by_hash(r_hash)
                 ocean_results = service.calculate_ocean(q_responses)
-                db.save_questionnaire(r_hash, q_responses, ocean_results)
+                db.save_questionnaire(hash_id, q_responses, ocean_results)
                 result = {'status': 200, 'scores': ocean_results}
         return jsonify(result)
 

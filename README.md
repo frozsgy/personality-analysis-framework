@@ -14,6 +14,7 @@ Please refer to [INSTALL.md](INSTALL.md)
 
 * Python 3.8
 * Java 8
+* MySQL or MariaDB 
 
 
 For a list of required Python libraries, refer to [requirements.txt](requirements.txt).
