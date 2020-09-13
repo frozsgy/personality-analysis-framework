@@ -25,12 +25,12 @@ except:
 
 CONFIG = yaml.safe_load(config_yaml)
 
-def calculate_vector(username, auth_pair, from_file=False, debug=False, verbose=False):
+def calculate_vector(username, auth_pair, from_file=False, debug=False, verbose=False, r_hash=None):
 
     # Data Collection
 
     if from_file is True:
-        all_tweets = twitter.download.read_csv(username)
+        all_tweets = twitter.download.read_csv(username, r_hash)
     else:
         all_tweets = twitter.download.get_all_tweets(
             username, CONFIG, auth_pair, debug, False, verbose)
@@ -211,7 +211,7 @@ def get_ocean(username, user_id, r_hash):
         twitter.download.create_csv(outtweets, username, r_hash)
         twitter.download.create_csv(alltweets, username, r_hash, True)
 
-    vector = calculate_vector(username, auth_pair, True)
+    vector = calculate_vector(username, auth_pair, True, False, False, r_hash)
     ocean = cluster(vector)
     print("OCEAN scores for {} calculated".format(username))
     db.finalize_ocean(r_hash, ocean)
@@ -234,7 +234,7 @@ if __name__ == '__main__':
         username = input("Enter username: ")
 
     auth_pair = ('', '') # fill as needed
-    vector = calculate_vector(username, auth_pair, from_file, debugging, verbose)
+    vector = calculate_vector(username, auth_pair, from_file, debugging, verbose, "")
     print("'{}': {},".format(username, vector))
     #print(vector)
     print("Predicted OCEAN score: "),

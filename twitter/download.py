@@ -93,9 +93,9 @@ def create_csv(outtweets, screen_name, r_hash, save_raw_data = False):
         for tweet in outtweets:
             writer.writerow(tweet.get_csv())
 
-def read_csv(screen_name):
+def read_csv(screen_name, r_hash):
     outtweets = []
-    with open(f'data/tweets/{screen_name}_tweets.csv', 'r') as f:
+    with open(f'data/tweets/{screen_name}_tweets_{r_hash}.csv', 'r') as f:
         reader = csv.reader(f, delimiter=",")
         next(reader)
         for line in reader:
