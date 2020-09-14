@@ -141,14 +141,19 @@ const Result = () => {
     </>
   );
 
-const redirectQuestionnaire = () => {
-  history.push("questionnaire?" + formData);   
-}
+  const redirectQuestionnaire = () => {
+    history.push("questionnaire?" + formData);
+  };
 
   const participateQuestionnaire = (
     <Segment textAlign="center" vertical>
       <Form.Field>
-        <Button color="green" size="large" onClick={redirectQuestionnaire} fluid>
+        <Button
+          color="green"
+          size="large"
+          onClick={redirectQuestionnaire}
+          fluid
+        >
           Bilime katkı sağlamak ister misiniz?
         </Button>
       </Form.Field>
@@ -167,7 +172,11 @@ const redirectQuestionnaire = () => {
                 {state.loaded !== false && (
                   <>
                     <Image src={imageUrl} size="big" centered />
-                    {state.canQuestionnaire ? participateQuestionnaire : ""}
+                    {state.canQuestionnaire &&
+                    r_hash !== null &&
+                    JSON.parse(r_hash) === hash
+                      ? participateQuestionnaire
+                      : ""}
                   </>
                 )}
                 {state.loaded === false && state.dataSize !== 0 && (

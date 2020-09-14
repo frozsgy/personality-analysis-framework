@@ -24,7 +24,9 @@ function App() {
         <Route path="/questionnaire">
           <Questionnaire />
         </Route>
-        <Route path="*">404 not found</Route>
+        <Route path="*">
+          <Home />
+        </Route>
       </Switch>
     </Router>
   );
