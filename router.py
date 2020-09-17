@@ -24,7 +24,6 @@ app = Flask(__name__)
 CORS(app)
 
 service = Service(CONFIG)
-db = DB(CONFIG)
 
 threads = []
 
@@ -43,6 +42,7 @@ def _serve():
 @app.route('/callback', methods=['GET'])
 def _callback():
     try:
+        db = DB(CONFIG)
         oauth_token = request.args.get('oauth_token')
         oauth_verifier = request.args.get('oauth_verifier')
         auto_share = request.args.get('auto_share')
@@ -82,6 +82,7 @@ def _callback():
 @app.route('/result', methods=['GET'])
 def _result():
     try:
+        db = DB(CONFIG)
         r_hash = request.args.get('hash')
         auto_share = request.args.get('auto_share')
         status = db.get_status_by_hash(r_hash)
@@ -113,6 +114,7 @@ def _result():
 @app.route('/validate', methods=['POST'])
 def _validate():
     try:
+        db = DB(CONFIG)
         r_hash = request.form.get('hash')
         r_secret = request.form.get('secret')
         response = {'status': 500, 'error': 'Exception occurred'}
@@ -148,6 +150,7 @@ def _image():
 @app.route('/questionnaire', methods=['POST'])
 def _questionnaire():
     try:
+        db = DB(CONFIG)
         r_hash = request.form.get('hash')
         r_secret = request.form.get('secret')
         result = {'status': 500, 'error': 'Exception occurred'}

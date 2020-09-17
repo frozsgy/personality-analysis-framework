@@ -17,7 +17,6 @@ import { toast } from "react-toastify";
 
 /*
     -- TODO --
-    - translate questionnaire questions
     - display result after succesful submission
 */
 
@@ -47,7 +46,7 @@ const Questionnaire = () => {
     "Etrafına neşe saçan bir insanım.",
     "Başkaları hakkında fazla endişelenmem.",
     "Her zaman hazırım.",
-    "Kolayca stres olurum.",
+    "Kolayca streslenirim.",
     "Kelime dağarcığım zengindir.",
     "Fazla konuşmam.",
     "İnsanlar ilgimi çeker.",
@@ -73,16 +72,16 @@ const Questionnaire = () => {
     "Yumuşak bir yüreğim var.",
     "Sıklıkla eşyaları doğru yerlerine koymayı unuturum.",
     "Kolayca üzülürüm.",
-    "İyi bir hayalgücüm yok",
-    "Partilerde birsürü farklı insanla konuşurum.",
+    "İyi bir hayalgücüm yok.",
+    "Partilerde bir sürü farklı insanla konuşurum.",
     "Başkalarıyla pek ilgilenmem.",
     "Düzen hoşuma gider.",
-    "Modumu çok değiştiririm.",
+    "Ruh halim sıklıkla değişir.",
     "Bir şeyleri anlamakta hızlıyım.",
     "Dikkati kendime çekmekten hoşlanmam.",
-    "Başkaları için ara veririm.",
+    "Başkaları için vakit ayırırım.",
     "İşlerden kaytarırım.",
-    "Sıklıkla mod değişimleri yaşarım.",
+    "Ruh halim sıklıkla değişir.",
     "Zor kelimeler kullanırım.",
     "İlgi odağı olmak beni rahatsız etmez.",
     "Başkalarının duygularını hissederim.",
