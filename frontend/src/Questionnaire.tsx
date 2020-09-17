@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Grid,
@@ -196,6 +196,10 @@ const Questionnaire = () => {
         localStorage.setItem("isLoggedIn", JSON.stringify(false));
       });
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
