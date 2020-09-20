@@ -21,7 +21,7 @@ except:
 CONFIG = yaml.safe_load(config_yaml)
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": CONFIG['url']}})
 
 service = Service(CONFIG)
 
