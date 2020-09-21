@@ -1,4 +1,4 @@
-export const server = "https://personality-api.ozanalpay.com/"; //"http://localhost:8080/";
+export const server = "http://localhost:8080/";//"https://personality-api.ozanalpay.com/"; //;
 export const frontend = "https://personality.ozanalpay.com/";
 
 export const getKey = (key = "name") => {

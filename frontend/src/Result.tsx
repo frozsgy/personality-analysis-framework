@@ -59,7 +59,7 @@ const Result = () => {
           } else {
             const dataSize = response.dataSize;
             if (state.dataSize !== dataSize) {
-              localStorage.setItem("startTime", JSON.stringify(Date.now()));  
+              localStorage.setItem("startTime", JSON.stringify(Date.now()));
               setState({
                 ...state,
                 dataSize: dataSize,
@@ -126,7 +126,10 @@ const Result = () => {
       });
   };
 
-  const estimate = ["Tweetlerinizin analiz edilmesi yaklaşık olarak ", " dakika sürecektir."];
+  const estimate = [
+    "Tweetlerinizin analiz edilmesi yaklaşık olarak ",
+    " dakika sürecektir.",
+  ];
 
   useEffect(() => {
     startAnalysis();
@@ -169,12 +172,23 @@ const Result = () => {
     </Segment>
   );
 
-  const percentage = Math.floor((Date.now() - Number(localStorage.getItem("takenTime"))) / 1000) * 6;
-  const progressBar = (<Progress
-  percent={state.loaded ? 100 : (Math.floor(100 * percentage / state.dataSize!) > 99 ? 99 : Math.floor(100 * percentage / state.dataSize!))}
-  autoSuccess
-  active
-/>);
+  const percentage =
+    Math.floor(
+      (Date.now() - Number(localStorage.getItem("takenTime"))) / 1000
+    ) * 6;
+  const progressBar = (
+    <Progress
+      percent={
+        state.loaded
+          ? 100
+          : Math.floor((100 * percentage) / state.dataSize!) > 99
+          ? 99
+          : Math.floor((100 * percentage) / state.dataSize!)
+      }
+      autoSuccess
+      active
+    />
+  );
 
   return (
     <>
@@ -198,8 +212,19 @@ const Result = () => {
                 {state.loaded === false && state.dataSize !== 0 && (
                   <>
                     <p>Tweetleriniz analiz ediliyor...</p>
-                    <p>{state.dataSize !== undefined && (estimate[0] + Math.ceil(state.dataSize!/700) + estimate[1])}</p>
-                <p>Bu süreçte, bu sayfayı kapatabilirsiniz. Sayfayı kapatırsanız, sonuçlarınıza <a href={resultUrl}>bu</a> adresten ulaşabilirsiniz. Eğer sonuçlarınızın otomatik paylaşılmasını seçtiyseniz, sonuçlarınız Twitter hesabınızdan da paylaşılacaktır.</p>
+                    <p>
+                      {state.dataSize !== undefined &&
+                        estimate[0] +
+                          Math.ceil(state.dataSize! / 700) +
+                          estimate[1]}
+                    </p>
+                    <p>
+                      Bu süreçte, bu sayfayı kapatabilirsiniz. Sayfayı
+                      kapatırsanız, sonuçlarınıza <a href={resultUrl}>bu</a>{" "}
+                      adresten ulaşabilirsiniz. Eğer sonuçlarınızın otomatik
+                      paylaşılmasını seçtiyseniz, sonuçlarınız Twitter
+                      hesabınızdan da paylaşılacaktır.
+                    </p>
                     {progressBar}
                   </>
                 )}
