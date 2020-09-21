@@ -56,8 +56,9 @@ def _callback():
         me = api.me()
         user_id = me._json['id']
         username = me._json['screen_name']
+        total_tweets = me._json['statuses_count']
         if db.check_if_user_exists(user_id) == False:
-            db.add_user(user_id, username, auth_pair[0], auth_pair[1])
+            db.add_user(user_id, username, auth_pair[0], auth_pair[1], total_tweets)
         else:
             db.update_tokens(user_id, auth_pair[0], auth_pair[1])
         push_id = PushID()
@@ -88,8 +89,8 @@ def _result():
         status = db.get_status_by_hash(r_hash)
         user_id = db.get_uid_by_hash(r_hash)
         auth_pair = db.get_tokens_by_id(user_id)
-        total_tweets = service.get_total_tweets(*auth_pair)
-        if total_tweets < 10:
+        total_tweets = db.get_total_tweets_by_id(user_id)
+        if total_tweets < 10 and total_tweets > -1:
             total_tweets = 0
         elif total_tweets > 3200:
             total_tweets = 3200

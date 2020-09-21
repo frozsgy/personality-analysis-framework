@@ -22,8 +22,6 @@ const Result = () => {
     canQuestionnaire: false,
   });
 
-  let percent = 99;
-
   const history = useHistory();
 
   const hash = getKey("hash");
@@ -59,11 +57,18 @@ const Result = () => {
               });
             }
           } else {
-            percent += 5;
-            setTimeout(startAnalysis, 5000);
+            const dataSize = response.dataSize;
+            if (state.dataSize !== dataSize) {
+              localStorage.setItem("startTime", JSON.stringify(Date.now()));  
+              setState({
+                ...state,
+                dataSize: dataSize,
+              });
+            }
+            setTimeout(startAnalysis, 7000);
           }
         } else {
-          console.log("error");
+          //console.log("error");
         }
       })
       .catch((e) => {
@@ -106,14 +111,14 @@ const Result = () => {
       .then((r) => r!.json())
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.finished);
+          //console.log(response.finished);
           if (response.finished === false) {
             if (state.canQuestionnaire !== true) {
               setState({ ...state, canQuestionnaire: true });
             }
           }
         } else {
-          console.log("error");
+          //console.log("error");
         }
       })
       .catch((e) => {
@@ -121,12 +126,16 @@ const Result = () => {
       });
   };
 
+  const estimate = ["Tweetlerinizin analiz edilmesi yaklaşık olarak ", " dakika sürecektir."];
+
   useEffect(() => {
     startAnalysis();
     getCanQuestionnaire();
   });
 
   const imageUrl = server + "image?hash=" + state.image;
+
+  const resultUrl = frontend + "result?hash=" + hash;
 
   const shareLink = () => (
     <>
@@ -160,6 +169,13 @@ const Result = () => {
     </Segment>
   );
 
+  const percentage = Math.floor((Date.now() - Number(localStorage.getItem("takenTime"))) / 1000) * 6;
+  const progressBar = (<Progress
+  percent={state.loaded ? 100 : (Math.floor(100 * percentage / state.dataSize!) > 99 ? 99 : Math.floor(100 * percentage / state.dataSize!))}
+  autoSuccess
+  active
+/>);
+
   return (
     <>
       {state.loaded !== false && shareLink}
@@ -181,12 +197,10 @@ const Result = () => {
                 )}
                 {state.loaded === false && state.dataSize !== 0 && (
                   <>
-                    <p>Tweetleriniz analiz ediliyor</p>
-                    <Progress
-                      percent={state.loaded ? 100 : percent}
-                      autoSuccess
-                      active
-                    />
+                    <p>Tweetleriniz analiz ediliyor...</p>
+                    <p>{state.dataSize !== undefined && (estimate[0] + Math.ceil(state.dataSize!/700) + estimate[1])}</p>
+                <p>Bu süreçte, bu sayfayı kapatabilirsiniz. Sayfayı kapatırsanız, sonuçlarınıza <a href={resultUrl}>bu</a> adresten ulaşabilirsiniz. Eğer sonuçlarınızın otomatik paylaşılmasını seçtiyseniz, sonuçlarınız Twitter hesabınızdan da paylaşılacaktır.</p>
+                    {progressBar}
                   </>
                 )}
                 {state.loaded === false && state.dataSize === 0 && (
