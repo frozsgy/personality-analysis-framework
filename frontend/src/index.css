@@ -17,17 +17,17 @@ code {
   display: flex;
 }
 
-.left {
+.header-left {
   float: left;
 }
 
 @media only screen and (min-width: 600px) {
-  .right {
+  .header-right {
     float: right;
   }
 }
 
-.right {
+.header-right {
   margin-left: auto;
 }
 

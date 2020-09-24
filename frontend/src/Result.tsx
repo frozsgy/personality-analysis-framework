@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Container,
@@ -20,6 +20,7 @@ const Result = () => {
     image: "",
     dataSize: undefined,
     canQuestionnaire: false,
+    percentage: 0,
   });
 
   const history = useHistory();
@@ -65,7 +66,7 @@ const Result = () => {
                 dataSize: dataSize,
               });
             }
-            setTimeout(startAnalysis, 10000);
+            //setTimeout(startAnalysis, 10000);
           }
         } else {
           //console.log("error");
@@ -80,7 +81,6 @@ const Result = () => {
   const secret = localStorage.getItem("secret");
   const r_hash = localStorage.getItem("hash");
   const takenTime = localStorage.getItem("takenTime");
-  console.log(takenTime);
   if (Date.now() - Number(takenTime) < 15 * 60 * 1000) {
     if (
       r_hash !== undefined &&
@@ -132,9 +132,27 @@ const Result = () => {
     " dakika sürecektir.",
   ];
 
+
+
+  const percentageRef = useRef(0);
+
+
   useEffect(() => {
     startAnalysis();
     getCanQuestionnaire();
+    const interval = setInterval(() => {
+      //console.log(state.percentage);
+      //startAnalysis();
+      //getCanQuestionnaire();
+      const tempPercentage = Math.floor((100 * (Math.floor(
+        (Date.now() - Number(localStorage.getItem("takenTime"))) / 1000
+      ) * 6)) / state.dataSize!);
+      percentageRef.current = state.loaded ? 100 : (tempPercentage > 99 ? 99 : tempPercentage);
+      setState({
+        ...state,
+        percentage: percentageRef.current});
+    }, 10000);
+    return () => clearInterval(interval);
   });
 
   const imageUrl = server + "image?hash=" + state.image;
@@ -148,7 +166,7 @@ const Result = () => {
       <meta property="og:title" content="Tweetleriniz ile Kişilik Analizi" />
       <meta
         property="og:description"
-        content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz. Makine Öğrenmesi kullanarak yöntemimizi sürekli iyileştiriyoruz."
+        content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz."
       />
       <meta property="og:image" content={imageUrl} />
     </>
@@ -173,18 +191,10 @@ const Result = () => {
     </Segment>
   );
 
-  const percentage =
-    Math.floor(
-      (Date.now() - Number(localStorage.getItem("takenTime"))) / 1000
-    ) * 6;
   const progressBar = (
     <Progress
       percent={
-        state.loaded
-          ? 100
-          : Math.floor((100 * percentage) / state.dataSize!) > 99
-          ? 99
-          : Math.floor((100 * percentage) / state.dataSize!)
+        state.percentage
       }
       autoSuccess
       active
@@ -199,7 +209,7 @@ const Result = () => {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={16}>
-                <Header size='large'>Tweetlerinizin Kişiliği Nasıl?</Header>
+                <Header size="large">Tweetlerinizin Kişiliği Nasıl?</Header>
                 {state.loaded !== false && (
                   <>
                     <Image src={imageUrl} size="big" centered />

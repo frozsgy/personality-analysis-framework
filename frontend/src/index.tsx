@@ -24,14 +24,14 @@ ReactDOM.render(
                 size="medium"
                 href={frontend}
                 target="_blank"
-                className="left"
+                className="header-left"
               />
 
               {/*(<Button
                   color="twitter"
                   size="medium"
                   onClick={() => openTwitter()}
-                  className="right"
+                  className="header-right"
                 >
                   <Icon name="twitter" /> @TweetKisiligim
                 </Button>)*/}
