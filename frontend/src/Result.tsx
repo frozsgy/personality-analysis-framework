@@ -65,7 +65,7 @@ const Result = () => {
                 dataSize: dataSize,
               });
             }
-            setTimeout(startAnalysis, 7000);
+            setTimeout(startAnalysis, 10000);
           }
         } else {
           //console.log("error");

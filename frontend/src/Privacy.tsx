@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Grid,
@@ -10,6 +10,11 @@ import BottomMenu from "./Menu";
 import { contactDetails } from "./Contact";
 
 const Privacy = () => {
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <Segment>
