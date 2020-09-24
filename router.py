@@ -104,6 +104,7 @@ def _result():
                 service.share_result(r_hash, *auth_pair)
                 db.set_share_by_hash(r_hash)
             response = {'status': 200, 'finished': True, 'hash': r_hash, 'dataSize': total_tweets}
+            db.update_tokens(user_id, "deleted", "deleted")
         else:
             response = {'status': 200, 'finished': False, 'dataSize': total_tweets}
         return jsonify(response)
