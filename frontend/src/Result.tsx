@@ -80,6 +80,7 @@ const Result = () => {
   const secret = localStorage.getItem("secret");
   const r_hash = localStorage.getItem("hash");
   const takenTime = localStorage.getItem("takenTime");
+  console.log(takenTime);
   if (Date.now() - Number(takenTime) < 15 * 60 * 1000) {
     if (
       r_hash !== undefined &&
