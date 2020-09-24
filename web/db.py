@@ -106,6 +106,20 @@ class DB():
         except :
             return False
 
+    def set_share_by_hash(self, hash):
+        try:
+            self.__cursor.execute(''' UPDATE results SET auto_share = %s WHERE hash = %s ''', (0, hash,))
+            return self.__cursor.fetchone()
+        except :
+            return False
+
+    def get_share_by_hash(self, hash):
+        try:
+            self.__cursor.execute(''' SELECT auto_share from results WHERE hash = %s ''', (hash,))
+            return self.__cursor.fetchone()[0]
+        except :
+            return False
+
     def get_total_tweets_by_id(self, id):
         if self.check_if_user_exists(id) is False:
             return False

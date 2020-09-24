@@ -58,7 +58,7 @@ class Service:
         auth.set_access_token(token, secret)
         api = tweepy.API(auth)
         image_path = f'{self.__working_dir}/web/images/{r_hash}.png'
-        status = "Tweetlerime göre kişilik analimizi yaptırdım! Sen de yaptırmak istersen: " + self.__url 
+        status = "Tweetlerime göre kişilik analimizi yaptırdım! Sen de yaptırmak istersen: " + self.__url + "\n#TweetKişiliğim @TweetKisiligim"
         api.update_with_media(image_path, status)
 
     def hash(self, uid, token, secret):

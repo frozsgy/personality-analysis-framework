@@ -63,7 +63,7 @@ def _callback():
             db.update_tokens(user_id, auth_pair[0], auth_pair[1])
         push_id = PushID()
         r_hash = push_id.next_id()
-        db.insert_ocean(r_hash, user_id, auto_share)
+        db.insert_ocean(r_hash, user_id, auto_share == "true")
 
         j = threading.Thread(target=get_ocean, args=(username, user_id, r_hash))
         threads.append(j)
@@ -99,8 +99,10 @@ def _result():
             ocean = db.get_ocean_by_hash(r_hash)
             username = db.get_username_by_id(user_id)
             filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'], r_hash)
-            if auto_share == "true":
+            auto_share_db = db.get_share_by_hash(r_hash)
+            if auto_share_db == 1:
                 service.share_result(r_hash, *auth_pair)
+                db.set_share_by_hash(r_hash)<
             response = {'status': 200, 'finished': True, 'hash': r_hash, 'dataSize': total_tweets}
         else:
             response = {'status': 200, 'finished': False, 'dataSize': total_tweets}
