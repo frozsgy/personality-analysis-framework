@@ -5,11 +5,8 @@ import {
   Header,
   Segment,
   List,
-  Button,
-  Icon,
 } from "semantic-ui-react";
 import BottomMenu from "./Menu";
-import { openTwitter } from "./Constants";
 import { contactDetails } from "./Contact";
 
 const Privacy = () => {
