@@ -8,6 +8,7 @@ import * as serviceWorker from "./serviceWorker";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { frontend } from "./Constants";
+import CookieConsent from "react-cookie-consent";
 
 /*const openTwitter = () => {
   const url = "https://twitter.com/TweetKisiligim";
@@ -21,17 +22,16 @@ ReactDOM.render(
         <Grid>
           <Grid.Row columns="equal" centered>
             <Grid.Column width={12} className="logo" stackable>
-           
-                <Image
-                  src="https://www.metu.edu.tr/sites/all/themes/odtu/images/odtu-logo-en.svg"
-                  as="a"
-                  size="medium"
-                  href={frontend}
-                  target="_blank"
-                  className="left"
-                />
-                
-                {/*(<Button
+              <Image
+                src="https://www.metu.edu.tr/sites/all/themes/odtu/images/odtu-logo-en.svg"
+                as="a"
+                size="medium"
+                href={frontend}
+                target="_blank"
+                className="left"
+              />
+
+              {/*(<Button
                   color="twitter"
                   size="medium"
                   onClick={() => openTwitter()}
@@ -39,7 +39,6 @@ ReactDOM.render(
                 >
                   <Icon name="twitter" /> @TweetKisiligim
                 </Button>)*/}
-              
             </Grid.Column>
           </Grid.Row>
 
@@ -52,6 +51,13 @@ ReactDOM.render(
         </Grid>
       </Container>
     </div>
+
+    <CookieConsent acceptOnScroll={true} buttonText={"Anladım"}>
+      Sitemizi en verimli şekilde kullanabilmeniz ve kullanıcı
+      deneyiminizi iyileştirebilmek için çerezler kullanmaktayız. Çerez
+      kullanılmasını tercih etmezseniz tarayıcınızın ayarlarından çerezleri
+      silebilir ya da engelleyebilirsiniz. 
+    </CookieConsent>
   </React.StrictMode>,
   document.getElementById("root")
 );
