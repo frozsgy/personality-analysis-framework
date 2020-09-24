@@ -10,10 +10,6 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { frontend } from "./Constants";
 import CookieConsent from "react-cookie-consent";
 
-/*const openTwitter = () => {
-  const url = "https://twitter.com/TweetKisiligim";
-  window.open(url);
-};*/
 
 ReactDOM.render(
   <React.StrictMode>

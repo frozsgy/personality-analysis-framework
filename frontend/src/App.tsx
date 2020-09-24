@@ -6,6 +6,9 @@ import Callback from "./Callback";
 import Result from "./Result";
 import Share from "./Share";
 import Questionnaire from "./Questionnaire";
+import Background from "./Background";
+import Privacy from "./Privacy";
+import Contact from "./Contact";
 
 function App() {
   return (
@@ -19,6 +22,15 @@ function App() {
         </Route>
         <Route path="/result">
           <Result />
+        </Route>
+        <Route path="/bilimsel-arkaplan">
+          <Background />
+        </Route>
+        <Route path="/gizlilik-bildirimi">
+          <Privacy />
+        </Route>
+        <Route path="/iletisim">
+          <Contact />
         </Route>
         <Route exact path="/share/:hash" component={Share} />
         <Route path="/questionnaire">

@@ -21,7 +21,7 @@ const Share = (props: any) => {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={16}>
-                <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
+                <Header size='large'>Tweetlerinizin Kişiliği Nasıl?</Header>
                 <Image src={imageUrl} size="big" centered/>
               </Grid.Column>
             </Grid.Row>

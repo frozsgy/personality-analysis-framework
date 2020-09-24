@@ -6,3 +6,8 @@ export const getKey = (key = "name") => {
     const urlParams = new URLSearchParams(queryString);
     return urlParams.get(key);
   };
+
+export const openTwitter = () => {
+  const url = "https://twitter.com/TweetKisiligim";
+  window.open(url);
+};

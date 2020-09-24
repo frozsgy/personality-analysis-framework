@@ -208,9 +208,30 @@ const Questionnaire = () => {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={16}>
-                <Header>Kişilik Anketi</Header>
+                <Header size="large">Kişilik Anketi</Header>
                 <Form onSubmit={handleSubmit}>
-                  lorem ipsum dolor sit amet dasdadas
+                  <p>
+                    Aşağıda, sizden kişilik tipinizi belirlemek için
+                    yanıtlamanızı istediğimiz 50 soru bulunmaktadır. Bu anket
+                    sonucunda, Big 5 kişilik sonucunuz elde edilecek ve bu sonuç
+                    yapay zeka modelimizin iyileştirilmesi için kullanılacaktır.
+                    Sonuçlarınız herhangi bir yerde paylaşılmayacaktır.{" "}
+                  </p>
+
+                  <p>
+                    Bu test, Oregon Araştırma Enstitüsü’nün Uluslararası Açık
+                    Erişim Kişilik Araştırmaları Envanteri’nin bir parçasıdır.{" "}
+                  </p>
+
+                  <p>
+                    Testi yanıtlamaktan istediğiniz an vazgeçebilirsiniz, ancak
+                    testi tamamlamanız bizi çok mutlu eder.
+                  </p>
+
+                  <p>
+                    Bu aşamaya devam ettiğiniz için şimdiden teşekkür ederiz!
+                  </p>
+
                   <Table definition>
                     <Table.Header>
                       <Table.Row textAlign="center">

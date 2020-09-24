@@ -57,7 +57,7 @@ const Home = () => {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={16}>
-                <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
+                <Header size='large'>Tweetlerinizin Kişiliği Nasıl?</Header>
                 <p>Tweetleriniz analiz ediliyor...</p>
               </Grid.Column>
             </Grid.Row>

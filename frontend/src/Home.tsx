@@ -53,16 +53,15 @@ const Home = () => {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={16}>
-                <Header>Tweetlerinizin Kişiliği Nasıl?</Header>
+                <Header size='large'>Tweetlerinizin Kişiliği Nasıl?</Header>
                 <p>
                   Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi
                   analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi
-                  hesaplıyoruz. Makine Öğrenmesi kullanarak yöntemimizi sürekli
-                  iyileştiriyoruz.
+                  hesaplıyoruz.
                 </p>
                 <p>
-                  Kişiliğinizi görüntülemek için Twitter hesabınızla giriş
-                  yapın:{" "}
+                  Gelişmiş yapay zeka yöntemlerimizi kullanarak kişiliğinizi
+                  görüntülemek için Twitter hesabınızla giriş yapın:
                 </p>
 
                 <Form>
