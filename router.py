@@ -102,7 +102,7 @@ def _result():
             auto_share_db = db.get_share_by_hash(r_hash)
             if auto_share_db == 1:
                 service.share_result(r_hash, *auth_pair)
-                db.set_share_by_hash(r_hash)<
+                db.set_share_by_hash(r_hash)
             response = {'status': 200, 'finished': True, 'hash': r_hash, 'dataSize': total_tweets}
         else:
             response = {'status': 200, 'finished': False, 'dataSize': total_tweets}
