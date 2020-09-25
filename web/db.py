@@ -180,3 +180,25 @@ class DB():
         finally:
             self.__conn.commit()
             return res
+
+    def get_unique_user_count(self):
+        try:
+            self.__cursor.execute(''' SELECT COUNT(id) from users ''')
+            return self.__cursor.fetchone()[0]
+        except :
+            return 0
+
+    def get_result_count(self):
+        try:
+            self.__cursor.execute(''' SELECT COUNT(id) from results ''')
+            return self.__cursor.fetchone()[0]
+        except :
+            return 0
+
+    def get_questionnaire_count(self):
+        try:
+            self.__cursor.execute(''' SELECT COUNT(id) from questionnaire ''')
+            return self.__cursor.fetchone()[0]
+        except :
+            return 0
+

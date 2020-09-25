@@ -188,6 +188,21 @@ def _questionnaire():
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
 
+@app.route('/stats', methods=['GET'])
+@app.route('/api/stats', methods=['GET'])
+def _stats():
+    try:
+        db = DB(CONFIG)
+        unique_user_count = db.get_unique_user_count()
+        result_count = db.get_result_count()
+        questionnaire_count = db.get_questionnaire_count()
+        result = {'status': 200, 'stats': {'users': unique_user_count, 'results': result_count, 'questionnaire': questionnaire_count}}
+        return jsonify(result)
+    except BaseException as e:
+        print(e)
+        result = {'status': 500, 'error': 'Exception occurred'}
+        return jsonify(result)
+
 
 if __name__ == '__main__':
     try:
