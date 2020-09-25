@@ -29,6 +29,7 @@ threads = []
 
 
 @app.route('/', methods=['GET'])
+@app.route('/api/', methods=['GET'])
 def _serve():
     try:
         result = {'status': 200, 'url': service.login()}
@@ -40,6 +41,7 @@ def _serve():
 
 
 @app.route('/callback', methods=['GET'])
+@app.route('/api/callback', methods=['GET'])
 def _callback():
     try:
         db = DB(CONFIG)
@@ -81,6 +83,7 @@ def _callback():
 
 
 @app.route('/result', methods=['GET'])
+@app.route('/api/result', methods=['GET'])
 def _result():
     try:
         db = DB(CONFIG)
@@ -116,6 +119,7 @@ def _result():
 
 
 @app.route('/validate', methods=['POST'])
+@app.route('/api/validate', methods=['POST'])
 def _validate():
     try:
         db = DB(CONFIG)
@@ -139,6 +143,7 @@ def _validate():
 
 
 @app.route('/image', methods=['GET'])
+@app.route('/api/image', methods=['GET'])
 def _image():
     try:
         r_hash = request.args.get('hash')
@@ -152,6 +157,7 @@ def _image():
 
 
 @app.route('/questionnaire', methods=['POST'])
+@app.route('/api/questionnaire', methods=['POST'])
 def _questionnaire():
     try:
         db = DB(CONFIG)
