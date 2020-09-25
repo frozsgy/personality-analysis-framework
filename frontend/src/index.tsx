@@ -23,7 +23,7 @@ ReactDOM.render(
                 as="a"
                 size="medium"
                 href={frontend}
-                target="_blank"
+                target="_self"
                 className="header-left"
               />
 

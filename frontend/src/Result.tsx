@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Container,
@@ -132,25 +132,25 @@ const Result = () => {
     " dakika sürecektir.",
   ];
 
-
-
-  const percentageRef = useRef(0);
-
-
   useEffect(() => {
     startAnalysis();
     getCanQuestionnaire();
     const interval = setInterval(() => {
-      //console.log(state.percentage);
-      //startAnalysis();
-      //getCanQuestionnaire();
-      const tempPercentage = Math.floor((100 * (Math.floor(
+      const timePassed = Math.floor(
         (Date.now() - Number(localStorage.getItem("takenTime"))) / 1000
-      ) * 6)) / state.dataSize!);
-      percentageRef.current = state.loaded ? 100 : (tempPercentage > 99 ? 99 : tempPercentage);
+      );
+      const tempPercentage = Math.floor(
+        (100 * (timePassed * 6)) / state.dataSize!
+      );
+      const currentPercentage = state.loaded
+        ? 100
+        : tempPercentage > 99
+        ? 99
+        : tempPercentage;
       setState({
         ...state,
-        percentage: percentageRef.current});
+        percentage: currentPercentage,
+      });
     }, 10000);
     return () => clearInterval(interval);
   });
@@ -163,7 +163,7 @@ const Result = () => {
     <>
       <meta name="twitter:card" content="summary_large_image" />
       <meta property="og:url" content={frontend} />
-      <meta property="og:title" content="Tweetleriniz ile Kişilik Analizi" />
+      <meta property="og:title" content="Tweet Kişiliğim | Twitter Kişilik Analizi" />
       <meta
         property="og:description"
         content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz."
@@ -192,13 +192,7 @@ const Result = () => {
   );
 
   const progressBar = (
-    <Progress
-      percent={
-        state.percentage
-      }
-      autoSuccess
-      active
-    />
+    <Progress percent={state.percentage} autoSuccess active />
   );
 
   return (

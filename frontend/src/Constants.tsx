@@ -1,5 +1,5 @@
-export const server = "http://localhost:8080/";//"https://personality-api.ozanalpay.com/"; //;
-export const frontend = "https://personality.ozanalpay.com/";
+export const server = "https://www.tweetkisiligim.xyz/api/"; //;"http://localhost:8080/";//
+export const frontend = "https://www.tweetkisiligim.xyz/";
 
 export const getKey = (key = "name") => {
     const queryString = window.location.search;
