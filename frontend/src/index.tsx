@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { frontend } from "./Constants";
 import CookieConsent from "react-cookie-consent";
+import logo from "./logo2.png";
 
 
 ReactDOM.render(
@@ -19,22 +20,13 @@ ReactDOM.render(
           <Grid.Row columns="equal" centered>
             <Grid.Column width={12} className="logo" stackable>
               <Image
-                src="https://www.metu.edu.tr/sites/all/themes/odtu/images/odtu-logo-en.svg"
+                src={logo}
                 as="a"
                 size="medium"
                 href={frontend}
                 target="_self"
                 className="header-left"
               />
-
-              {/*(<Button
-                  color="twitter"
-                  size="medium"
-                  onClick={() => openTwitter()}
-                  className="header-right"
-                >
-                  <Icon name="twitter" /> @TweetKisiligim
-                </Button>)*/}
             </Grid.Column>
           </Grid.Row>
 
