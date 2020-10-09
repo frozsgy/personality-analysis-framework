@@ -204,6 +204,27 @@ def _stats():
         return jsonify(result)
 
 
+@app.route('/status', methods=['GET'])
+@app.route('/api/status', methods=['GET'])
+def _status():
+    try:
+        import subprocess
+        processes = ["mariadb", "nginx", "zemberek", "word2vec", "personality"]
+        services = dict()
+        for process in processes:
+            p =  subprocess.Popen(["/usr/bin/systemctl", "is-active",  process], stdout=subprocess.PIPE)
+            (output, err) = p.communicate()
+            output = output.decode('utf-8').split()[0]
+            services[process] = output
+        result = {'status': 200, 'services': services}
+        return jsonify(result)
+    except BaseException as e:
+        print(e)
+        result = {'status': 500, 'error': 'Exception occurred'}
+        return jsonify(result)
+
+
+
 if __name__ == '__main__':
     try:
         http_server = WSGIServer(('0.0.0.0', 8080), app)
