@@ -167,6 +167,7 @@ def _questionnaire():
         if r_hash is not None and r_secret is not None:
             status = db.get_status_by_hash(r_hash)
             user_id = db.get_uid_by_hash(r_hash)
+            username = db.get_username_by_id(user_id)
             auth_pair = db.get_tokens_by_id(user_id)
             q_hash = service.hash(user_id, *auth_pair)
             if q_hash == r_secret and db.get_survey_by_hash(r_hash) == 0:
@@ -180,13 +181,17 @@ def _questionnaire():
                 hash_id = db.get_id_by_hash(r_hash)
                 ocean_results = service.calculate_ocean(q_responses)
                 db.save_questionnaire(hash_id, q_responses, ocean_results)
-                result = {'status': 200, 'scores': ocean_results}
+                ocean_scores = (ocean_results['o'], ocean_results['c'], ocean_results['e'], ocean_results['a'], ocean_results['n'])
+                ocean = list(map(lambda x: int(x * 4), ocean_scores))
+                filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'], r_hash, True)
+                result = {'status': 200, 'scores': ocean_results, 'image': filename}
         return jsonify(result)
 
     except BaseException as e:
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
+
 
 @app.route('/stats', methods=['GET'])
 @app.route('/api/stats', methods=['GET'])
@@ -196,7 +201,8 @@ def _stats():
         unique_user_count = db.get_unique_user_count()
         result_count = db.get_result_count()
         questionnaire_count = db.get_questionnaire_count()
-        result = {'status': 200, 'stats': {'users': unique_user_count, 'results': result_count, 'questionnaire': questionnaire_count}}
+        result = {'status': 200, 'stats': {'users': unique_user_count,
+                                           'results': result_count, 'questionnaire': questionnaire_count}}
         return jsonify(result)
     except BaseException as e:
         print(e)
@@ -212,7 +218,8 @@ def _status():
         processes = ["mariadb", "nginx", "zemberek", "word2vec", "personality"]
         services = dict()
         for process in processes:
-            p =  subprocess.Popen(["/usr/bin/systemctl", "is-active",  process], stdout=subprocess.PIPE)
+            p = subprocess.Popen(["/usr/bin/systemctl", "is-active",
+                                  process], stdout=subprocess.PIPE)
             (output, err) = p.communicate()
             output = output.decode('utf-8').split()[0]
             services[process] = output
@@ -222,7 +229,6 @@ def _status():
         print(e)
         result = {'status': 500, 'error': 'Exception occurred'}
         return jsonify(result)
-
 
 
 if __name__ == '__main__':

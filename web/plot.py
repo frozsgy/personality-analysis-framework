@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 
-def plot_ocean(username, scores, working_directory, url, r_hash):
+def plot_ocean(username, scores, working_directory, url, r_hash, from_test=False):
     labels = ["Açıklık",
               "Sorumluluk",
               "Dışadönüklük",
@@ -36,12 +36,18 @@ def plot_ocean(username, scores, working_directory, url, r_hash):
     ax.grid(color='#AAAAAA')
     ax.spines['polar'].set_color('#222222')
     ax.set_facecolor('#FAFAFA')
-
-    ax.set_title(f'{username} Twitter Kişilik Analizi', y=1.08)
+    if from_test is True:
+        ax.set_title(f'{username} Kişilik Analizi', y=1.08)
+    else:
+        ax.set_title(f'{username} Twitter Kişilik Analizi', y=1.08)
 
     plt.text(0.95, -0.1, url, horizontalalignment='center',
              verticalalignment='center', transform=ax.transAxes)
 
     now = int(time.time())
-    plt.savefig(f'{working_directory}/web/images/{r_hash}', bbox_inches='tight')
-    return f'{working_directory}/web/images/{r_hash}.png'
+
+    file_name = f'{working_directory}/web/images/{r_hash}'
+    if from_test is True:
+        file_name += '_test'
+    plt.savefig(file_name, bbox_inches='tight')
+    return file_name + '.png'
