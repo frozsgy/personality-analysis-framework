@@ -20,7 +20,7 @@ class DB():
         try :
             self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS users (id bigint NOT NULL UNIQUE, username text, access_token varchar(512), access_secret varchar(512), tweet_count integer) ''')
             self.__cursor.execute(''' CREATE TABLE IF NOT EXISTS results (id integer NOT NULL AUTO_INCREMENT , uid bigint NOT NULL, hash varchar(128) UNIQUE, score_o real, score_c real, score_e real, score_a real, score_n real, status varchar(32), auto_share boolean, survey boolean, PRIMARY KEY(id), FOREIGN KEY(uid) REFERENCES users(id)) ''')
-            self.__cursor.execute('''  CREATE TABLE IF NOT EXISTS questionnaire (id integer NOT NULL AUTO_INCREMENT, r_id integer NOT NULL, q0 integer, q1 integer, q2 integer, q3 integer, q4 integer, q5 integer, q6 integer, q7 integer, q8 integer, q9 integer, q10 integer, q11 integer, q12 integer, q13 integer, q14 integer, q15 integer, q16 integer, q17 integer, q18 integer, q19 integer, q20 integer, q21 integer, q22 integer, q23 integer, q24 integer, q25 integer, q26 integer, q27 integer, q28 integer, q29 integer, q30 integer, q31 integer, q32 integer, q33 integer, q34 integer, q35 integer, q36 integer, q37 integer, q38 integer, q39 integer, q40 integer, q41 integer, q42 integer, q43 integer, q44 integer, q45 integer, q46 integer, q47 integer, q48 integer, q49 integer, score_o real, score_c real, score_e real, score_a real, score_n real, PRIMARY KEY(id), FOREIGN KEY(r_id) REFERENCES results(id)) ''')
+            self.__cursor.execute('''  CREATE TABLE IF NOT EXISTS questionnaire (id integer NOT NULL AUTO_INCREMENT, r_id integer NOT NULL, q0 integer, q1 integer, q2 integer, q3 integer, q4 integer, q5 integer, q6 integer, q7 integer, q8 integer, q9 integer, q10 integer, q11 integer, q12 integer, q13 integer, q14 integer, q15 integer, q16 integer, q17 integer, q18 integer, q19 integer, q20 integer, q21 integer, q22 integer, q23 integer, q24 integer, q25 integer, q26 integer, q27 integer, q28 integer, q29 integer, q30 integer, q31 integer, q32 integer, q33 integer, q34 integer, q35 integer, q36 integer, q37 integer, q38 integer, q39 integer, q40 integer, q41 integer, q42 integer, q43 integer, q44 integer, q45 integer, q46 integer, q47 integer, q48 integer, q49 integer, score_o real, score_c real, score_e real, score_a real, score_n real, hash varchar(128) UNIQUE, PRIMARY KEY(id), FOREIGN KEY(r_id) REFERENCES results(id)) ''')
         except:
             print('Cannot create DB')
         finally:
@@ -167,11 +167,11 @@ class DB():
         except :
             return False
 
-    def save_questionnaire(self, r_hash, responses, ocean):
+    def save_questionnaire(self, r_hash, responses, ocean, q_hash):
         res = True
         try:
-            data = (None, r_hash, *responses, ocean['o'], ocean['c'], ocean['e'], ocean['a'], ocean['n'])
-            self.__cursor.execute(''' INSERT into questionnaire VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ''', data)
+            data = (None, r_hash, *responses, ocean['o'], ocean['c'], ocean['e'], ocean['a'], ocean['n'], q_hash)
+            self.__cursor.execute(''' INSERT into questionnaire VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ''', data)
             self.__cursor.execute(''' UPDATE results SET survey = %s WHERE id = %s ''', (1, r_hash,))
             if self.__verbose:
                 print("Questionnaire responses saved for hash %s" % s_hash)

@@ -48,6 +48,6 @@ def plot_ocean(username, scores, working_directory, url, r_hash, from_test=False
 
     file_name = f'{working_directory}/web/images/{r_hash}'
     if from_test is True:
-        file_name += '_test'
+        file_name = f'{working_directory}/web/images/questionnaire/{r_hash}'
     plt.savefig(file_name, bbox_inches='tight')
     return file_name + '.png'

@@ -147,7 +147,10 @@ def _validate():
 def _image():
     try:
         r_hash = request.args.get('hash')
+        f_test = request.args.get('questionnaire')
         working_directory = CONFIG['pwd']
+        if f_test == "true":
+            return send_file(f'{working_directory}/web/images/questionnaire/{r_hash}.png', mimetype='image/png')
         return send_file(f'{working_directory}/web/images/{r_hash}.png', mimetype='image/png')
 
     except BaseException as e:
@@ -180,11 +183,13 @@ def _questionnaire():
 
                 hash_id = db.get_id_by_hash(r_hash)
                 ocean_results = service.calculate_ocean(q_responses)
-                db.save_questionnaire(hash_id, q_responses, ocean_results)
+                push_id = PushID()
+                qr_hash = push_id.next_id()
+                db.save_questionnaire(hash_id, q_responses, ocean_results, qr_hash)
                 ocean_scores = (ocean_results['o'], ocean_results['c'], ocean_results['e'], ocean_results['a'], ocean_results['n'])
                 ocean = list(map(lambda x: int(x * 4), ocean_scores))
-                filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'], r_hash, True)
-                result = {'status': 200, 'scores': ocean_results, 'image': filename}
+                filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'], qr_hash, True)
+                result = {'status': 200, 'scores': ocean_results, 'hash': qr_hash }
         return jsonify(result)
 
     except BaseException as e:
