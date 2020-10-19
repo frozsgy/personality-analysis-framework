@@ -189,7 +189,7 @@ def _questionnaire():
                 ocean_scores = (ocean_results['o'], ocean_results['c'], ocean_results['e'], ocean_results['a'], ocean_results['n'])
                 ocean = list(map(lambda x: int(x * 4), ocean_scores))
                 filename = plot_ocean(username, ocean, CONFIG['pwd'], CONFIG['url'], qr_hash, True)
-                result = {'status': 200, 'scores': ocean_results, 'hash': qr_hash }
+                result = {'status': 200, 'scores': ocean_results, 'hash': r_hash, 'q_hash': qr_hash }
         return jsonify(result)
 
     except BaseException as e:
