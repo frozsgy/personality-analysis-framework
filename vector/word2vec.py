@@ -1,4 +1,4 @@
-import os 
+import os
 
 import yaml
 
@@ -11,7 +11,10 @@ from gevent.pywsgi import WSGIServer
 from flask import request, json, Flask, jsonify
 
 try:
-    config_yaml = open("./config.yml")
+    service_directory = os.path.dirname(__file__)
+    home_directory = os.path.abspath(os.path.join(service_directory, ".."))
+    config_file = os.path.join(home_directory, "config.yml")
+    config_yaml = open(config_file)
 except:
     exit("config.yml file is missing, run setup.py")
 
@@ -20,7 +23,9 @@ CONFIG = yaml.safe_load(config_yaml)
 app = Flask(__name__)
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
-word_vector = KeyedVectors.load_word2vec_format(datapath(dir_path + "/" + "wikipedia-vector.bin"), binary = True)
+word_vector = KeyedVectors.load_word2vec_format(
+    datapath(dir_path + "/" + "wikipedia-vector.bin"), binary=True)
+
 
 @app.route('/word2vec', methods=['GET'])
 def _serve():
@@ -28,7 +33,7 @@ def _serve():
         word = request.args.get('word')
         if word is None or len(word.strip()) == 0:
             return "These aren't the droids you're looking for."
-        else :
+        else:
             vector = word_vector[word]
             vector = vector.tolist()
             result = {'word2vec': vector}
