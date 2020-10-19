@@ -216,6 +216,16 @@ def get_ocean(username, user_id, r_hash):
     print("OCEAN scores for {} calculated".format(username))
     db.finalize_ocean(r_hash, ocean)
 
+def get_public_ocean(username):
+    pass
+    # -- TODO -- 
+    # generate a push id
+    # add user to db
+    # download tweets
+    # calculate vector
+    # cluster
+    # finalize ocean
+
 
 if __name__ == '__main__':
     debugging = False
