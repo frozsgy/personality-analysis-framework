@@ -9,6 +9,7 @@ import Questionnaire from "./Questionnaire";
 import Background from "./Background";
 import Privacy from "./Privacy";
 import Contact from "./Contact";
+import Compare from "./Compare";
 
 function App() {
   return (
@@ -31,6 +32,9 @@ function App() {
         </Route>
         <Route path="/iletisim">
           <Contact />
+        </Route>
+        <Route path="/compare">
+          <Compare />
         </Route>
         <Route exact path="/share/:hash" component={Share} />
         <Route path="/questionnaire">

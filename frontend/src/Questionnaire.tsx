@@ -185,11 +185,15 @@ const Questionnaire = () => {
           return Promise.reject(new Error("Unknown error occurred"));
         }
       })
-      .then((response) => {
-        /*setTimeout(() => {
-          history.push("/dashboard");
-        }, 2000);*/
-        toast.success("Anketi doldurduğunuz için teşekkürler!");
+      .then((r) => r!.json())
+      .then((r) => {
+        const ocean = r!.hash;
+        const ocean_q = r!.q_hash;
+        setTimeout(() => {
+          history.push("/compare?hash=" + ocean + "&questionnaire=" + ocean_q);
+        }, 2500);
+        toast.success("Anketi doldurduğunuz için teşekkürler! Sonuç sayfasına yönlendiriliyorsunuz...");
+      
       })
       .catch((e) => {
         //toast.error(e.message);
