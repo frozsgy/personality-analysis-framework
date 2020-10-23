@@ -15,11 +15,6 @@ import { useHistory } from "react-router-dom";
 import { server, getKey } from "./Constants";
 import { toast } from "react-toastify";
 
-/*
-    -- TODO --
-    - display result after succesful submission
-*/
-
 declare global {
   type Dictionary<T> = { [key: string]: T };
 }
@@ -192,8 +187,9 @@ const Questionnaire = () => {
         setTimeout(() => {
           history.push("/compare?hash=" + ocean + "&questionnaire=" + ocean_q);
         }, 2500);
-        toast.success("Anketi doldurduğunuz için teşekkürler! Sonuç sayfasına yönlendiriliyorsunuz...");
-      
+        toast.success(
+          "Anketi doldurduğunuz için teşekkürler! Sonuç sayfasına yönlendiriliyorsunuz..."
+        );
       })
       .catch((e) => {
         //toast.error(e.message);

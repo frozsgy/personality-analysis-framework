@@ -12,7 +12,27 @@ import {
 } from "semantic-ui-react";
 import fetch from "isomorphic-unfetch";
 import BottomMenu from "./Menu";
-import { server, frontend, getKey } from "./Constants";
+import {
+  server,
+  frontend,
+  getKey,
+  describeBigFive,
+  labelsBigFive,
+} from "./Constants";
+
+export const printBigFive = () => {
+  const description = [];
+  for (let i = 0; i < 5; i++) {
+    const temp = (
+      <>
+        <Header size="medium">{labelsBigFive[i]}</Header>
+        <p>{describeBigFive[i]}</p>
+      </>
+    );
+    description.push(temp);
+  }
+  return description.map((item) => item);
+};
 
 const Result = () => {
   const [state, setState] = useState({
@@ -163,7 +183,10 @@ const Result = () => {
     <>
       <meta name="twitter:card" content="summary_large_image" />
       <meta property="og:url" content={frontend} />
-      <meta property="og:title" content="Tweet Kişiliğim | Twitter Kişilik Analizi" />
+      <meta
+        property="og:title"
+        content="Tweet Kişiliğim | Twitter Kişilik Analizi"
+      />
       <meta
         property="og:description"
         content="Bilimsel olarak kanıtlanmış yöntemimiz ile tweetlerinizi analiz edip Twitter'da nasıl bir kişilik temsil ettiğinizi hesaplıyoruz."
@@ -207,6 +230,13 @@ const Result = () => {
                 {state.loaded !== false && (
                   <>
                     <Image src={imageUrl} size="big" centered />
+                    <Header size="large">Kişilik Özellikleri</Header>
+                    <p>
+                      Grafikte temsil edilen 5 köşe, kişiliğinizin 5 özelliğini
+                      temsil etmekte. Bunlarla ilgili ayrıntılı bilgiyi aşağıda
+                      bulabilirsiniz.
+                    </p>
+                    {printBigFive()}
                     {state.canQuestionnaire &&
                     r_hash !== null &&
                     JSON.parse(r_hash) === hash
