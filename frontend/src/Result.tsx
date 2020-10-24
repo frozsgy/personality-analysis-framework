@@ -208,7 +208,7 @@ const Result = () => {
           onClick={redirectQuestionnaire}
           fluid
         >
-          Bilime katkı sağlamak ister misiniz?
+          Twitter kişiliğinizi gerçek kişiliğinizle kıyaslamak ister misiniz?
         </Button>
       </Form.Field>
     </Segment>

@@ -31,7 +31,29 @@ const Compare = () => {
               </Grid.Column>
             </Grid.Row>
 
-
+            <Header size="medium">Sonuçlarınız arasında fark mı var?</Header>
+            <p>
+              Eğer Twitter hesabınızdaki kişiliğiniz ile anket sonucundaki
+              kişiliğiniz arasında ciddi fark varsa, bunun iki sebebi olabilir:
+            </p>
+            <p><ol>
+              <li>
+                Twitter hesabınızda gerçek kişiliğinizden farklı bir kişilik
+                gösteriyorsunuz
+              </li>
+              <li>
+                Sizin kişilik özelliklerinize sahip birine dair veriye daha önce
+                ulaşamamışız
+              </li>
+            </ol></p>
+            <p>
+              Eğer sebebin birincisi olduğunu düşünüyorsanız, sorun yok! Ancak
+              sebebin ikinci madde olduğunu düşünüyorsanız,{" "}
+              <strong>size çok teşekkür ederiz</strong>! Anketimizi doldurarak
+              yapay zeka modelimizin iyileştirilmesine katkıda bulundunuz,
+              veri bilimi bu katkınızı unutmayacak :)
+            </p>
+            <p></p>
             {/* TODO -- FILL IN WHY THIS HAPPENS */}
           </Grid>
         </Container>

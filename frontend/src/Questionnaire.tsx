@@ -225,7 +225,9 @@ const Questionnaire = () => {
 
                   <p>
                     Testi yanıtlamaktan istediğiniz an vazgeçebilirsiniz, ancak
-                    testi tamamlamanız bizi çok mutlu eder.
+                    testi tamamlamanız bizi çok mutlu eder. Anketimizi
+                    tamamlayarak veri bilimi alanındaki çalışmalarımıza katkı
+                    sağlamış olacaksınız.
                   </p>
 
                   <p>
