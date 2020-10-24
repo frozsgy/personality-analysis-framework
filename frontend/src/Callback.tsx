@@ -1,5 +1,12 @@
 import React from "react";
-import { Container, Grid, Header, Segment } from "semantic-ui-react";
+import {
+  Container,
+  Grid,
+  Header,
+  Segment,
+  Button,
+  Form,
+} from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
 import BottomMenu from "./Menu";
@@ -10,6 +17,7 @@ const Home = () => {
 
   const oauth_token = getKey("oauth_token");
   const oauth_verifier = getKey("oauth_verifier");
+  const denied = getKey("denied");
 
   const startAnalysis = () => {
     const autoShare = localStorage.getItem("autoShare") === "true";
@@ -41,15 +49,43 @@ const Home = () => {
       .then((response) => {
         localStorage.setItem("secret", JSON.stringify(response.secret));
         localStorage.setItem("hash", JSON.stringify(response.hash));
-        localStorage.setItem("takenTime", JSON.stringify(Date.now()));     
-        history.push(response!.url);        
+        localStorage.setItem("takenTime", JSON.stringify(Date.now()));
+        history.push(response!.url);
       })
       .catch((e) => {
         console.log(e.message);
       });
   };
 
-  startAnalysis();
+  let placeholderText = <p>Tweetleriniz analiz ediliyor...</p>;
+
+  if (denied !== null && denied.length > 8) {
+    placeholderText = (
+      <>
+        <p>
+          Kişilik analizinin çalışabilmesi için, uygulamamızı Twitter üzerinden
+          yetkilendirmeniz gerekiyor.
+        </p>
+        <Segment textAlign="center" vertical>
+          <Form.Field>
+            <Button
+              primary
+              size="large"
+              onClick={() => {
+                history.push("");
+              }}
+              fluid
+            >
+              Ana sayfaya dön
+            </Button>
+          </Form.Field>
+        </Segment>
+      </>
+    );
+  } else {
+    startAnalysis();
+  }
+
   return (
     <>
       <Segment>
@@ -57,8 +93,8 @@ const Home = () => {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={16}>
-                <Header size='large'>Tweetlerinizin Kişiliği Nasıl?</Header>
-                <p>Tweetleriniz analiz ediliyor...</p>
+                <Header size="large">Tweetlerinizin Kişiliği Nasıl?</Header>
+                {placeholderText}
               </Grid.Column>
             </Grid.Row>
           </Grid>

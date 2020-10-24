@@ -30,6 +30,9 @@ const Compare = () => {
                 <Image src={questionnaireUrl} size="big" centered />
               </Grid.Column>
             </Grid.Row>
+
+
+            {/* TODO -- FILL IN WHY THIS HAPPENS */}
           </Grid>
         </Container>
       </Segment>
